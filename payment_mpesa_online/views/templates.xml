@@ -1,0 +1,46 @@
+<odoo>
+    <data>
+
+        <template id="mpesa_online_assets_frontend"  inherit_id="web.assets_frontend" name="Mpesa Online Assets Frontend">
+            <xpath expr="script[last()]" position="after">
+                <script type="text/javascript" src="/payment_mpesa_online/static/src/js/payment_form.js"></script>
+            </xpath>
+        </template>
+
+        <template id="payment_mpesa_online.mpese_phone_number" inherit_id="payment.payment_tokens_list" name="Mpesa Online phone number request">
+            <xpath expr="//div[@t-attf-id='o_payment_form_acq_{{acq.id}}']" position="inside">
+                <t t-if="acq.provider=='mpesa_online'">
+                    <div class="card-body">
+                        <table class="table table-striped table-condensed">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <span t-esc="acq.name + ' ' + acq.mpesa_online_service_name">:</span>
+                                    </td>
+                                    <td class="text-right">
+                                        <strong><span t-field="acq.mpesa_online_service_number"/></strong>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>Please confirm the M-PESA phone number that you will use to pay for your order.</p>
+                        <p>Payment request will be sent to this number.</p>
+                        <div style="white-space:nowrap;"><span class="text-left">M-PESA Phone No.</span> <input type='text' name='mpesa_phone_number' id="mpesa_phone_number" required="required"  placeholder="254xxxxxxxxx"/></div>
+                    </div>
+                </t>
+            </xpath>
+
+        </template>
+
+        <template id="payment_mpesa_online.mpesa_online_acquirer_button" name="MPESA Online Form Button Template">
+            <input type="hidden" name="data_set" t-att-data-action-url="tx_url" data-remove-me=""/>
+            <input id="return_url" type='hidden' name='return_url' t-att-value='return_url'/>
+            <input id="callback_url" type='hidden' name='callback_url' t-att-value='callback_url'/>
+            <input id="reference" type='hidden' name='reference' t-att-value='reference'/>
+            <input id="amount" type='hidden' name='amount' t-att-value='amount'/>
+            <input id="currency" type='hidden' name='currency' t-att-value='currency.id'/>
+            <input id="acquirer" type='hidden' name='acquirer' t-att-value='acquirer.id'/>
+            <input id="mpesa_phone_number" type="hidden" name="mpesa_phone_number"/>
+        </template>
+    </data>
+</odoo>

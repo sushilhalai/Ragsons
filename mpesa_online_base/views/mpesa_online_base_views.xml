@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<odoo>
+
+		<!-- mpesa_online list view definition -->
+		<record model="ir.ui.view" id="mpesa_online_list">
+				<field name="name">mpesa_online list</field>
+				<field name="model">mpesa.online</field>
+				<field name="arch" type="xml">
+						<tree edit="0" delete="0" import="0" create="0" decoration-info="reconciled == False" decoration-muted="reconciled == True">
+								<field name="reconciled" invisible="1"/>
+								<field name="phone_number"/>
+								<field name="mpesa_receipt_number"/>
+								<field name="transaction_date"/>
+								<field name="write_uid" string="Reconciled by" attrs="{'invisible': [('reconciled','=', False)]}"/>
+								<field name="write_date" string="Reconciled on" attrs="{'invisible': [('reconciled','=', False)]}"/>
+								<field name="amount" sum="Total"/>
+						</tree>
+				</field>
+		</record>
+		<record id="view_mpesa_online_filter" model="ir.ui.view">
+				<field name="name">mpesa.online.select</field>
+				<field name="model">mpesa.online</field>
+				<field name="arch" type="xml">
+						<search string="Search Mpesa Online Payment Details">
+								<field name="phone_number" string="Mpesa details" filter_domain="['|','|','|','|',('phone_number','ilike',self), ('mpesa_receipt_number','ilike',self), ('transaction_date', 'ilike', self), ('merchant_request_id', 'ilike', self), ('checkout_request_id', 'ilike', self)]"/>
+								<field name="phone_number" />
+								<field name="mpesa_receipt_number" />
+								<field name="transaction_date" />
+								<field name="merchant_request_id" />
+								<field name="checkout_request_id"/>
+								<separator/>
+								<filter name="all_reconciled_payments" domain="[('reconciled','=', True)]" help="All reconciled payments"/>
+								<filter name="all_unreconciled_payments"  domain="[('reconciled','=', False)]" help="All Unreconciled payments"/>
+								<group expand="0" string="Group By">
+										<filter name="group_by_partner" string="Customer" context="{'group_by':'partner_id'}"/>
+										<filter name="group_by_phone_number" string="Mpesa Phone Number" context="{'group_by':'phone_number'}"/>
+										<filter  name="transaction_date_grouped" string="Transaction Date" context="{'group_by':'transaction_date'}"/>
+										<filter name="status_grouped" string="Reconciled" context="{'group_by':'reconciled'}"/>
+										<separator/>
+										<filter name="create_date_day" string="Date Created" context="{'group_by':'create_date'}"/>
+										<separator/>
+										<filter name="write_date_day" string="Date Modified" context="{'group_by':'write_date'}"/>
+										<separator/>
+										<filter name="write_uid" string="Cashier (person who reconciled)" context="{'group_by':'write_uid'}"/>
+								</group>
+						</search>
+				</field>
+		</record>
+
+		<!-- mpesa_online_base form view definition -->
+		<record model="ir.ui.view" id="mpesa_online_base_form">
+				<field name="name">mpesa_online_base form</field>
+				<field name="model">mpesa.online</field>
+				<field name="arch" type="xml">
+						<form edit="0" delete="0" import="0" create="0">
+								<sheet>
+										<field name="reconciled" invisible="1"/>
+										<field name="currency_id" invisible="1"/>
+										<group col="4" style="white-space:nowrap">
+												<field name="phone_number"/>
+												<field name="mpesa_receipt_number"/>
+												<field name="merchant_request_id"/>
+												<field name="checkout_request_id"/>
+												<field name="write_uid" string="Reconciled by" attrs="{'invisible': [('reconciled','=', False)]}"/>
+												<field name="write_date" string="Reconciled on" attrs="{'invisible': [('reconciled','=', False)]}"/>
+												<field name="transaction_date"/>
+												<field name="amount"/>
+										</group>
+								</sheet>
+						</form>
+				</field>
+		</record>
+
+		<!-- mpesa_online_base data view action window -->
+		<record model="ir.actions.act_window" id="mpesa_online_action_window">
+				<field name="name">Mpesa Express Details</field>
+				<field name="res_model">mpesa.online</field>
+				<field name="search_view_id" ref="view_mpesa_online_filter"/>
+				<field name="view_mode">tree,form</field>
+		</record>
+		<menuitem  id="mpesa_online_mobile_root_menu" action="mpesa_online_action_window" parent="account.root_payment_menu"  groups="account.group_account_manager"/>
+
+</odoo>

@@ -1,0 +1,452 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* payment_mpesa_online
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-09 21:42+0000\n"
+"PO-Revision-Date: 2021-02-09 21:42+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: payment_mpesa_online
+#: code:addons/payment_mpesa_online/models/payment_transaction.py:0
+#, python-format
+msgid " against an order amounting to"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model_terms:ir.ui.view,arch_db:payment_mpesa_online.mpese_phone_number
+msgid "254xxxxxxxxx"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model_terms:ir.ui.view,arch_db:payment_mpesa_online.mpese_phone_number
+msgid "<span class=\"text-left\">M-PESA Phone No.</span>"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model:ir.model.fields,field_description:payment_mpesa_online.field_payment_acquirer__mpesa_online_access_token_url
+msgid "Access Token URL"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model:ir.model.fields,field_description:payment_mpesa_online.field_payment_transaction__mpesa_online_amount
+msgid "Amount Paid"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model:ir.model.fields,help:payment_mpesa_online.field_payment_transaction__mpesa_online_amount
+msgid ""
+"Amount paid by customer. \n"
+"                The currency may differ from that of the sales order itself"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model:ir.model.fields.selection,name:payment_mpesa_online.selection__payment_acquirer__mpesa_online_transaction_type__customerbuygoodsonline
+msgid "Buy Goods and Services"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model:ir.model.fields,field_description:payment_mpesa_online.field_payment_acquirer__mpesa_online_callback_url
+msgid "Callback URL"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: code:addons/payment_mpesa_online/models/payment_acquirer.py:0
+#, python-format
+msgid "Cannot fetch access token. Received HTTP Error code "
+msgstr ""
+
+#. module: payment_mpesa_online
+#: code:addons/payment_mpesa_online/models/payment_acquirer.py:0
+#, python-format
+msgid "Cannot push request for payment. Received HTTP Error code "
+msgstr ""
+
+#. module: payment_mpesa_online
+#. openerp-web
+#: code:addons/payment_mpesa_online/static/src/js/payment_form.js:0
+#, python-format
+msgid "Cannot setup the payment"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model:ir.model.fields,field_description:payment_mpesa_online.field_payment_acquirer__mpesa_online_consumer_key
+msgid "Consumer Key"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model:ir.model.fields,field_description:payment_mpesa_online.field_payment_acquirer__mpesa_online_consumer_secret
+msgid "Consumer Secret"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model:ir.model.fields,field_description:payment_mpesa_online.field_payment_transaction__mpesa_online_currency_id
+msgid "Currency(Mpesa)"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model:ir.model.fields,field_description:payment_mpesa_online.field_payment_acquirer__mpesa_online_dp
+msgid "Decimal Precision"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model:ir.model.fields,field_description:payment_mpesa_online.field_mpesa_online__display_name
+#: model:ir.model.fields,field_description:payment_mpesa_online.field_payment_acquirer__display_name
+#: model:ir.model.fields,field_description:payment_mpesa_online.field_payment_transaction__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model:ir.model.fields,help:payment_mpesa_online.field_payment_acquirer__mpesa_online_service_name
+msgid ""
+"Enter the mobile money service name,e.g  MPESA if safaricom.                "
+"This will appear in E-commerce website "
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model:ir.model.fields,help:payment_mpesa_online.field_payment_acquirer__mpesa_online_service_number
+msgid ""
+"Enter the mobile money service number or shortcode e.g the Till number"
+"                or Pay bill number if MPESA, this will appear in E-commerce"
+"                 website for your customers to use"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model:ir.model.fields,field_description:payment_mpesa_online.field_mpesa_online__id
+#: model:ir.model.fields,field_description:payment_mpesa_online.field_payment_acquirer__id
+#: model:ir.model.fields,field_description:payment_mpesa_online.field_payment_transaction__id
+msgid "ID"
+msgstr ""
+
+#. module: payment_mpesa_online
+#. openerp-web
+#: code:addons/payment_mpesa_online/static/src/js/payment_form.js:0
+#, python-format
+msgid ""
+"Invalid phone number. Please use the format 254xxxxxxxxx. A total of 12 "
+"digits"
+msgstr ""
+
+#. module: payment_mpesa_online
+#. openerp-web
+#: code:addons/payment_mpesa_online/static/src/js/payment_form.js:0
+#, python-format
+msgid ""
+"Invalid phone number. Spaces and non-numeric characters are not allowed"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model:ir.model.fields,field_description:payment_mpesa_online.field_mpesa_online____last_update
+#: model:ir.model.fields,field_description:payment_mpesa_online.field_payment_acquirer____last_update
+#: model:ir.model.fields,field_description:payment_mpesa_online.field_payment_transaction____last_update
+msgid "Last Modified on"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model:ir.model.fields,field_description:payment_mpesa_online.field_payment_acquirer__mpesa_online_passkey
+msgid "Lipa Na MPESA Online Passkey"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model:ir.model.fields.selection,name:payment_mpesa_online.selection__payment_acquirer__provider__mpesa_online
+msgid "Lipa Na Mpesa Online"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model:ir.model.fields,field_description:payment_mpesa_online.field_payment_acquirer__mpesa_online_transaction_type
+msgid "Lipa na M-PESA"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model:ir.model.fields,field_description:payment_mpesa_online.field_payment_acquirer__mpesa_online_access_token
+msgid "M-PESA Access Token"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model:ir.model.fields,field_description:payment_mpesa_online.field_payment_acquirer__mpesa_online_currency_id
+msgid "M-PESA Currency"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model:payment.acquirer,name:payment_mpesa_online.payment_acquirer_mpesa_online
+msgid "M-PESA Express"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model:ir.model.fields,field_description:payment_mpesa_online.field_payment_transaction__mpesa_online_checkout_request_id
+#: model:ir.model.fields,help:payment_mpesa_online.field_payment_transaction__mpesa_online_checkout_request_id
+msgid "MPESA Checkout Request ID"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model:ir.model.fields,field_description:payment_mpesa_online.field_payment_transaction__mpesa_online_merchant_request_id
+msgid "MPESA Merchant Request ID"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model:ir.model.fields,field_description:payment_mpesa_online.field_payment_transaction__mpesa_online_receipt_number
+msgid "MPESA Receipt Number"
+msgstr ""
+
+#. module: payment_mpesa_online
+#. openerp-web
+#: code:addons/payment_mpesa_online/static/src/js/payment_form.js:0
+#, python-format
+msgid "MPESA phone number is required."
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model:ir.model.fields,help:payment_mpesa_online.field_payment_transaction__mpesa_online_merchant_request_id
+#: model:ir.model.fields,help:payment_mpesa_online.field_payment_transaction__mpesa_online_receipt_number
+msgid "MPESA transaction reference/receipt number"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: code:addons/payment_mpesa_online/controllers/main.py:0
+#, python-format
+msgid "MPESA_ONLINE: Completed sending payment request to customer"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: code:addons/payment_mpesa_online/models/payment_transaction.py:0
+#, python-format
+msgid "MPESA_ONLINE: Customer paid"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: code:addons/payment_mpesa_online/models/payment_transaction.py:0
+#, python-format
+msgid ""
+"MPESA_ONLINE: Payment successfully confirmed.Customer paid more than the "
+"order amount by"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: code:addons/payment_mpesa_online/models/payment_transaction.py:0
+#, python-format
+msgid ""
+"MPESA_ONLINE: Payment successfully confirmed.Customer paid precise amount"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: code:addons/payment_mpesa_online/models/payment_transaction.py:0
+#, python-format
+msgid ""
+"MPESA_ONLINE: Payment validated but order not confirmed.Customer paid less "
+"than the order amount by"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: code:addons/payment_mpesa_online/controllers/main.py:0
+#, python-format
+msgid "MPESA_ONLINE: Receiving payment form data for transaction ref"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: code:addons/payment_mpesa_online/controllers/main.py:0
+#, python-format
+msgid "MPESA_ONLINE: redirecting back to Odoo payment process."
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model:ir.model,name:payment_mpesa_online.model_mpesa_online
+msgid "Mpesa Online Data from Safaricom"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model:ir.model.fields,field_description:payment_mpesa_online.field_payment_transaction__mpesa_online_id
+msgid "Mpesa transaction"
+msgstr ""
+
+#. module: payment_mpesa_online
+#. openerp-web
+#: code:addons/payment_mpesa_online/static/src/js/payment_form.js:0
+#, python-format
+msgid "No payment method selected"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model:ir.model.fields.selection,name:payment_mpesa_online.selection__payment_acquirer__mpesa_online_transaction_type__customerpaybillonline
+msgid "PayBill"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model_terms:ir.ui.view,arch_db:payment_mpesa_online.acquirer_form_mpesa
+msgid "PayBill/Till Number"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model:ir.model,name:payment_mpesa_online.model_payment_acquirer
+msgid "Payment Acquirer"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model:ir.model,name:payment_mpesa_online.model_payment_transaction
+msgid "Payment Transaction"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model_terms:ir.ui.view,arch_db:payment_mpesa_online.mpese_phone_number
+msgid "Payment request will be sent to this number."
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model_terms:ir.ui.view,arch_db:payment_mpesa_online.mpese_phone_number
+msgid ""
+"Please confirm the M-PESA phone number that you will use to pay for your "
+"order."
+msgstr ""
+
+#. module: payment_mpesa_online
+#. openerp-web
+#: code:addons/payment_mpesa_online/static/src/js/payment_form.js:0
+#, python-format
+msgid "Please select a payment method."
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model:ir.model.fields,field_description:payment_mpesa_online.field_payment_acquirer__provider
+#: model:ir.model.fields,field_description:payment_mpesa_online.field_payment_transaction__provider
+msgid "Provider"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model:ir.model.fields,help:payment_mpesa_online.field_payment_transaction__mpesa_online_id
+msgid "Related payment details for the transaction"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model:ir.model.fields,field_description:payment_mpesa_online.field_payment_acquirer__mpesa_online_resource_url
+msgid "Resource URL"
+msgstr ""
+
+#. module: payment_mpesa_online
+#. openerp-web
+#: code:addons/payment_mpesa_online/static/src/js/payment_form.js:0
+#: code:addons/payment_mpesa_online/static/src/js/payment_form.js:0
+#: code:addons/payment_mpesa_online/static/src/js/payment_form.js:0
+#: code:addons/payment_mpesa_online/static/src/js/payment_form.js:0
+#, python-format
+msgid "Server Error"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model:ir.model.fields,field_description:payment_mpesa_online.field_payment_acquirer__mpesa_online_service_name
+msgid "Service Name"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model:ir.model.fields,field_description:payment_mpesa_online.field_payment_acquirer__mpesa_online_service_number
+msgid "Service Number"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model:ir.model.fields,field_description:payment_mpesa_online.field_payment_acquirer__mpesa_online_store_number
+msgid "Store Number"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model:ir.model.fields,help:payment_mpesa_online.field_payment_acquirer__mpesa_online_currency_id
+#: model:ir.model.fields,help:payment_mpesa_online.field_payment_transaction__mpesa_online_currency_id
+msgid ""
+"The M-PESA currency. Default is KES. \n"
+" If the sales order is in a different currency other than the M-PESA currency, \n"
+"it has to be converted to the M-PESA currency"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model:ir.model.fields,help:payment_mpesa_online.field_payment_acquirer__mpesa_online_token_expiry_date
+msgid ""
+"This date and time will automatically be updated \n"
+"                every time the system gets a new token from mpesa API"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model:ir.model.fields,help:payment_mpesa_online.field_payment_acquirer__mpesa_online_dp
+msgid ""
+"This is the decimal precision to be used when                 checking if "
+"customer paid exact,higher or less than the order amount.                 "
+"Default is zero meaning the paid amount and order amount are rounded up to"
+"                the nearest 'ones' by default..i.e no checking of decimals "
+"(cents) in comparing the paid                 amount vs the sales order "
+"amount"
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model:ir.model.fields,field_description:payment_mpesa_online.field_payment_acquirer__mpesa_online_token_expiry_date
+msgid "Token Expiry Date"
+msgstr ""
+
+#. module: payment_mpesa_online
+#. openerp-web
+#: code:addons/payment_mpesa_online/static/src/js/payment_form.js:0
+#: code:addons/payment_mpesa_online/static/src/js/payment_form.js:0
+#: code:addons/payment_mpesa_online/static/src/js/payment_form.js:0
+#, python-format
+msgid "User Error"
+msgstr ""
+
+#. module: payment_mpesa_online
+#. openerp-web
+#: code:addons/payment_mpesa_online/static/src/js/payment_form.js:0
+#, python-format
+msgid "We are not able to add your payment method at the moment."
+msgstr ""
+
+#. module: payment_mpesa_online
+#. openerp-web
+#: code:addons/payment_mpesa_online/static/src/js/payment_form.js:0
+#: code:addons/payment_mpesa_online/static/src/js/payment_form.js:0
+#, python-format
+msgid "We are not able to redirect you to the payment form."
+msgstr ""
+
+#. module: payment_mpesa_online
+#. openerp-web
+#: code:addons/payment_mpesa_online/static/src/js/payment_form.js:0
+#, python-format
+msgid "We're unable to process your payment."
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model_terms:payment.acquirer,pre_msg:payment_mpesa_online.payment_acquirer_mpesa_online
+msgid ""
+"You will be required to confirm the M-PESA phone number before making "
+"payment."
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model_terms:payment.acquirer,auth_msg:payment_mpesa_online.payment_acquirer_mpesa_online
+msgid "Your payment has been authorized."
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model_terms:payment.acquirer,cancel_msg:payment_mpesa_online.payment_acquirer_mpesa_online
+msgid "Your payment has been cancelled."
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model_terms:payment.acquirer,pending_msg:payment_mpesa_online.payment_acquirer_mpesa_online
+msgid ""
+"Your payment has been successfully processed but is waiting for approval."
+msgstr ""
+
+#. module: payment_mpesa_online
+#: model_terms:payment.acquirer,done_msg:payment_mpesa_online.payment_acquirer_mpesa_online
+msgid "Your payment has been successfully processed. Thank you!"
+msgstr ""
+
+#. module: payment_mpesa_online
+#. openerp-web
+#: code:addons/payment_mpesa_online/static/src/js/payment_form.js:0
+#, python-format
+msgid "e.g. Your credit card details are wrong. Please verify."
+msgstr ""

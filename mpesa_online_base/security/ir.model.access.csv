@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_mpesa_online_base_any,mpesa_online_base_any_user,model_mpesa_online,,0,0,0,0
+access_mpesa_online_base_manager,mpesa_online_base_manager,model_mpesa_online,account.group_account_manager,1,1,1,0

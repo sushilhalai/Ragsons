@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="payment_acquirer_mpesa_online" model="payment.acquirer">
+            <field name="name">M-PESA Express</field>
+            <field name="image_128" type="base64" file="payment_mpesa_online/static/src/img/mpesa_icon.png"/>
+            <field name="provider">mpesa_online</field>
+            <field name="mpesa_online_service_number">174379</field>
+            <field name="mpesa_online_service_name">M-pesa Xpress</field>
+			<field name="mpesa_online_currency_id" ref="base.KES"/>
+			<field name="mpesa_online_consumer_key">[Get you consumer key from safaricom]</field>
+			<field name="mpesa_online_consumer_secret">[Get you consumer secret from safaricom]</field>
+            <field name="module_id" ref="base.module_payment_mpesa_online"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="view_template_id" ref="payment_mpesa_online.mpesa_online_acquirer_button"/>
+            <field name="state">disabled</field>
+            <field name="pre_msg"><![CDATA[
+<p>You will be required to confirm the M-PESA phone number before making payment.</p>]]></field>
+
+            <field name="description" type="html">
+                <p>
+                Start accepting payments from your customers through M-Pesa Xpress.
+                </p>
+                <ul class="list-inline">
+                <li class="list-inline-item"><i class="fa fa-check"/>Online Payment</li>
+                <li class="list-inline-item"><i class="fa fa-check"/>Payment Status Tracking</li>
+                <li class="list-inline-item"><i class="fa fa-check"/>Secure</li>
+                <li class="list-inline-item"><i class="fa fa-check"/>Simple</li>
+                <li class="list-inline-item"><i class="fa fa-check"/>Real time</li>
+                <li class="list-inline-item"><i class="fa fa-check"/>Error free</li>
+                <li class="list-inline-item"><i class="fa fa-check"/>Low cost</li>
+                </ul>
+            </field>
+        </record>
+
+    </data>
+</odoo>
