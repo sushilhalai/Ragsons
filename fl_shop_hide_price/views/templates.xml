@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--Template for Hide Price and Add to Cart Button in Shop Page-->
+    <template id="products_item_hide_price" inherit_id="website_sale.products_item">
+        <xpath expr="//div[hasclass('product_price')]" position="attributes">
+            <attribute name="t-if">uid is not None</attribute>
+        </xpath>
+        <xpath expr="//div[hasclass('o_wsale_product_btn')]" position="attributes">
+            <attribute name="t-if">uid is not None</attribute>
+        </xpath>
+    </template>
+
+    <!--Template for Hide Product Price and Add to Cart in Product Detail Page-->
+    <template id="product_hide_price_addtocart" inherit_id="website_sale.product" priority="99">
+        <xpath expr="//t[@t-call='website_sale.product_price']" position="attributes">
+            <attribute name="t-if">uid is not None</attribute>
+        </xpath>
+        <xpath expr="//a[@id='add_to_cart']" position="replace">
+            <t t-if="uid is not None">
+                <a role="button" id="add_to_cart" class="btn btn-primary btn-lg mt8 js_check_product a-submit" href="#">Add to Cart</a>
+            </t>
+            <t t-if="uid is None">
+                <a class="btn btn-primary btn-lg mt8" href="/web/login">Log in to Check Price</a>
+            </t>
+        </xpath>
+        <xpath expr="//div[@id='product_option_block']" position="attributes">
+            <attribute name="t-if">uid is not None</attribute>
+        </xpath>
+    </template>
+
+    <!--Template for Hide Quantity in Product Detail Page-->
+    <template id="product_quantity_hide_quantity" inherit_id="website_sale.product_quantity">
+        <xpath expr="//div[hasclass('css_quantity','input-group')]" position="attributes">
+            <attribute name="t-if">uid is not None</attribute>
+        </xpath>
+    </template>
+</odoo>
