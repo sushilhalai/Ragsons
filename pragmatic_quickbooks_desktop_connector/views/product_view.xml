@@ -8,6 +8,7 @@
         <field name="inherit_id" ref="product.product_template_form_view" />
         <field name="arch" type="xml">
             <xpath expr="//notebook/page[1]/group[1]/group/field[@name='categ_id']" position="after">
+                <field name="full_name" readonly="1"/>
                 <field name="quickbooks_id" readonly="1"/>
                 <field name="is_updated" readonly="0"/>
 

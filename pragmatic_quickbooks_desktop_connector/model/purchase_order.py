@@ -99,7 +99,7 @@ class PurchaseOrder(models.Model):
                 if partner_id:
                     vals.update({'partner_id': partner_id.id})
                 else:
-                    raise Warning('Vendor is not correctly set for Purchase Order {}' % (order.get('quickbooks_id')))
+                    raise Warning('Vendor is not correctly set for Purchase Order %s' % (order.get('quickbooks_id')))
 
         if vals:
             return vals

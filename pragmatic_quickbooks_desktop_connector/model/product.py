@@ -20,8 +20,8 @@ class ProductTemplate(models.Model):
                         ('ItemGroup', 'Item Group'),
                         ('ItemService', 'Item Service'),
                         ('ItemInventoryAssembly', 'Item Inventory Assembly')])
-    
-    
+    full_name = fields.Char('Quickbook Full Name', copy=False)
+
     def export_product_to_qbd_server_action(self):
         product_lst = []
         for rec in self:
@@ -115,7 +115,6 @@ class ProductProduct(models.Model):
 
     # quickbooks_id = fields.Char("Quickbook id ", copy=False)
     # is_updated = fields.Boolean("Is Updated", default=False)
-
     # @api.multi
     # def create(self, vals):
     #     print ("---------------------- PP---",vals)
@@ -200,7 +199,8 @@ class ProductProduct(models.Model):
                 'qty_available': float(product.get('qty_available')) if product.get('qty_available') else 0.000,
                 'description_purchase': product.get('description_purchase') if product.get('description_purchase') else '',
                 'type': product.get('type') if product.get('type') else '',
-                'qbd_product_type': product.get('qbd_product_type', False)
+                'qbd_product_type': product.get('qbd_product_type', False),
+                'full_name': product.get('full_name') if product.get('full_name') else '',
             })
 
             if 'tax_code' in product and product.get('tax_code'):
