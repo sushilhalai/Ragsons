@@ -192,7 +192,7 @@ class Qb_Config_Settings(models.Model):
         except Exception as e:
             return self.sendMessage({'Message': "Connection Check to Quickbooks Unsuccessful !!"})
 
-#         print("\n\n test connection response",response.text)
+        # print("\n\n test connection response",response.text)
         r = json.loads(response.text)
         if r.get('Status') == 200:
             return self.sendMessage({'Message':"Connection Check to Quickbooks Successful !!"})
@@ -581,7 +581,7 @@ class Qb_Config_Settings(models.Model):
             limit = company.import_pro_limit
         else:
             limit = 0
-
+        response = None
         if not self.last_imported_qbd_id_for_product:
             params = {'to_execute_account': 1, 'function_name': 'import_products', 'limit': limit}
 #             print("\n\n im port product before response")
@@ -591,9 +591,8 @@ class Qb_Config_Settings(models.Model):
             except Exception as e:
                 raise Warning(e)
 
-#             print("\n\n im port account after response",response.text)
-
             formatted_data = ast.literal_eval(response.text)
+            # print("\n\n import product after response", type(response.text),formatted_data)
 
         else:
             last_qbd_id = self.last_imported_qbd_id_for_product
@@ -601,6 +600,7 @@ class Qb_Config_Settings(models.Model):
             try:
                 response = requests.request('GET', self.url + '/import_products', params=params, headers=headers,
                                         verify=False)
+                # print('\n\n Response From Flask Server : ', response.text)
             except Exception as e:
                 raise Warning(e)
 
@@ -654,7 +654,7 @@ class Qb_Config_Settings(models.Model):
                                         verify=False)
             except Exception as e:
                 raise Warning(e)
-
+            # print(response.text)
             formatted_data = ast.literal_eval(response.text)
 
         else:
@@ -747,7 +747,7 @@ class Qb_Config_Settings(models.Model):
                                         verify=False)
             except Exception as e:
                 raise Warning(e)
-#             print('\n\nResponse ::', response.text)
+            # print('\n\nResponse ::', response.text)
             formatted_data = ast.literal_eval(response.text)
 
         else:
@@ -758,7 +758,7 @@ class Qb_Config_Settings(models.Model):
                                         verify=False)
             except Exception as e:
                 raise Warning(e)
-#             print('\n\nResponse ::', response.text)
+            # print('\n\nResponse ::', response.text)
             formatted_data = ast.literal_eval(response.text)
 
         if formatted_data:
@@ -789,6 +789,7 @@ class Qb_Config_Settings(models.Model):
             try:
                 response = requests.request('GET', self.url + '/import_invoice', params=params, headers=headers,
                                         verify=False)
+                # print("\n\n response.text1 : ", response.text)
             except Exception as e:
                 raise Warning(e)
             formatted_data = ast.literal_eval(response.text)
@@ -799,6 +800,7 @@ class Qb_Config_Settings(models.Model):
             try:
                 response = requests.request('GET', self.url + '/import_invoice', params=params, headers=headers,
                                         verify=False)
+                # print("\n\n response.text2 : ", response.text)
             except Exception as e:
                 raise Warning(e)
 

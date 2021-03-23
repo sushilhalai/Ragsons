@@ -75,6 +75,38 @@ class AccountInvoice(models.Model):
     #                 vals['qbd_tax_code'] = rec.invoice_line_tax_ids[0].qbd_tax_code.id
     #                 rec.update(vals)
 
+    def _check_balanced(self):
+        ''' Assert the move is fully balanced debit = credit.
+        An error is raised if it's not the case.
+        '''
+        moves = self.filtered(lambda move: move.line_ids)
+        if not moves:
+            return
+
+        # /!\ As this method is called in create / write, we can't make the assumption the computed stored fields
+        # are already done. Then, this query MUST NOT depend of computed stored fields (e.g. balance).
+        # It happens as the ORM makes the create with the 'no_recompute' statement.
+        self.env['account.move.line'].flush(self.env['account.move.line']._fields)
+        self.env['account.move'].flush(['journal_id'])
+        self._cr.execute('''
+            SELECT line.move_id, ROUND(SUM(line.debit - line.credit), currency.decimal_places)
+            FROM account_move_line line
+            JOIN account_move move ON move.id = line.move_id
+            JOIN account_journal journal ON journal.id = move.journal_id
+            JOIN res_company company ON company.id = journal.company_id
+            JOIN res_currency currency ON currency.id = company.currency_id
+            WHERE line.move_id IN %s
+            GROUP BY line.move_id, currency.decimal_places
+            HAVING ROUND(SUM(line.debit - line.credit), currency.decimal_places) >= 0.5;
+        ''', [tuple(self.ids)])
+
+        query_res = self._cr.fetchall()
+        # print('query_res : ', query_res)
+        if query_res:
+            ids = [res[0] for res in query_res]
+            sums = [res[1] for res in query_res]
+            raise UserError(_("Cannot create unbalanced journal entry. Ids: %s\nDifferences debit - credit: %s") % (ids, sums))
+
     def write_taxcode(self, res):
         for rec in res.invoice_line_ids:
             move_line_obj = self.env['account.move.line'].search([('id', '=', rec.id)])
@@ -96,9 +128,9 @@ class AccountInvoice(models.Model):
         self.write_taxcode(self)
         return super(AccountInvoice, self).write(vals)
 
-    def create_invoice(self,invoices):
+    def create_invoice(self, invoices):
 
-        # print('\ninvoice data : \n\n',invoice)
+        # print('\ninvoice data : \n\n',invoices)
         # print('\n\nTotal invoice : ',len(invoice),'\n\n')
         company = self.env['res.users'].search([('id', '=', 2)]).company_id
         journal_id=self.env['account.journal'].search([('type','=','sale')])
@@ -106,6 +138,7 @@ class AccountInvoice(models.Model):
             raise ValidationError('Please create journal of type sale ..')
         for invoice in invoices:
             vals = {}
+            # print('\ninvoice data : \n\n', invoice)
             if 'quickbooks_id' in invoice and invoice.get('quickbooks_id'):
                 invoice_id = self.search([('quickbooks_id', '=', invoice.get('quickbooks_id'))], limit=1)
 
@@ -173,7 +206,7 @@ class AccountInvoice(models.Model):
                 if partner_id:
                     vals.update({'partner_id': partner_id.id})
                 else:
-                    raise Warning('Partner is not correctly set for invoice {}' % (invoice.get('quickbooks_id')))
+                    raise Warning('Partner is not correctly set for invoice %s' % (invoice.get('quickbooks_id')))
             if 'term_name' in invoice and invoice.get('term_name'):
                 term_id = self.env['account.payment.term'].search([('name','=',invoice.get('term_name'))])
 
@@ -191,6 +224,7 @@ class AccountInvoice(models.Model):
 
         if invoice_lines:
             for line in invoice_lines:
+                # print('\n\nline IDs :', line)
                 vals_ol = {}
                 vals_col = {}
                 vals_tol = {}
@@ -207,14 +241,13 @@ class AccountInvoice(models.Model):
                         vals_ol.update({'product_id': product_id.id})
                         vals_col.update({'product_id': False})
                         vals_tol.update({'product_id': False})
-
                     if 'tax_code' in line and line.get('tax_code'):
                         tax_code = self.env['qbd.tax.code'].search([('name', '=', line.get('tax_code'))])
                         if tax_code:
                             vals_ol.update({'qbd_tax_code': tax_code.id})
-
+                        # print("\n\n tax_code : ", tax_code)
                         if tax_code.is_taxable:
-                            tax_id = self.env['account.tax'].search([('quickbooks_id', '=', line.get('tax_qbd_id'))])
+                            tax_id = self.env['account.tax'].search([('quickbooks_id', '=', line.get('tax_qbd_id'))], limit=1)
                             vals_ol.update({'tax_ids': [(6, 0, [tax_id.id])]})
                             vals_col.update({'tax_ids': False})
                             vals_tol.update({'tax_ids': False})
@@ -259,11 +292,11 @@ class AccountInvoice(models.Model):
                     vals_ol.update({'price_unit':float(line.get('price_unit'))})
                     vals_col.update({'price_unit': -(float(line.get('price_unit')))})
 
-                    vals_ol.update({'credit':  vals_ol['quantity'] * float(line.get('price_unit'))})
+                    vals_ol.update({'credit':  abs(vals_ol['quantity']) * abs(float(line.get('price_unit')))})
                     vals_ol.update({'debit': 0})
 
                     vals_col.update({'credit': 0})
-                    vals_col.update({'debit': vals_col['quantity'] * (float(line.get('price_unit')))})
+                    vals_col.update({'debit': abs(vals_col['quantity']) * abs(float(line.get('price_unit')))})
                 else:
                     vals_ol.update({'price_unit':0})
                     vals_col.update({'price_unit': 0})
@@ -274,10 +307,9 @@ class AccountInvoice(models.Model):
                     vals_col.update({'credit': 0})
                     vals_col.update({'debit': 0})
 
-
                 if vals_ol.get('tax_ids'):
                     tax_amount = tax_id.amount
-                    vals_tol['price_unit'] = float(vals_ol['quantity'] * vals_ol['price_unit'] * float(tax_amount/100))
+                    vals_tol['price_unit'] = abs(float(vals_ol['quantity']) * vals_ol['price_unit'] * float(tax_amount/100))
                     vals_tol['credit'] = vals_tol['price_unit']
                     vals_tol['debit'] = 0
 
@@ -302,13 +334,14 @@ class AccountInvoice(models.Model):
                     data.append(vals_col)
                     if vals_ol.get('tax_ids'):
                         data.append(vals_tol)
+                    # print('\n\ndata : ', data)
                     invoice_line_id = self.env['account.move.line'].create(data)
 
                     # print ("----------------------------------------------------------\n\n\n",invoice_line_id,'\n\n\n')
                     # invoice_line_id._compute_price()
                     if invoice_line_id:
                         invoice_line_id_list.append(invoice_line_id)
-
+        # print("\n\ninvoice_line_id : \n\n ", invoice_line_id_list)
         if invoice_line_id_list:
             return invoice_line_id_list
 
@@ -537,7 +570,7 @@ class AccountInvoice(models.Model):
             for i in bad_chars:
                 description = description.replace(i, "")
 
-            print ("line.tax_ids[0].quickbooks_id=====================",line.tax_ids[0].quickbooks_id)
+            # print ("line.tax_ids[0].quickbooks_id=====================",line.tax_ids[0].quickbooks_id)
             if line.product_id:
                 line_dict.update({
                     'payment_terms': invoice.partner_id.property_payment_term_id.name if invoice.partner_id.property_payment_term_id.quickbooks_id else '',

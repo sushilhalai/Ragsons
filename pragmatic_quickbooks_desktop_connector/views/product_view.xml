@@ -8,11 +8,12 @@
         <field name="inherit_id" ref="product.product_template_form_view" />
         <field name="arch" type="xml">
             <xpath expr="//notebook/page[1]/group[1]/group/field[@name='categ_id']" position="after">
-                <field name="full_name" readonly="1"/>
                 <field name="quickbooks_id" readonly="1"/>
                 <field name="is_updated" readonly="0"/>
-
             </xpath>
+<!--            <xpath expr="//notebook/page[2]/group[2]" position="inside">-->
+<!--                <field name="description_sale" />-->
+<!--            </xpath>-->
             <xpath expr="//notebook/page[1]/group[1]/group[2]/label" position="before">
                 <field name="qbd_tax_code" required="1" readonly="0"/>
                 <field name="qbd_product_type" required="0"/>

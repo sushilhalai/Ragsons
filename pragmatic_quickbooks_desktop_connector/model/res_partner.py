@@ -109,6 +109,7 @@ class ResPartner(models.Model):
 
         for partner in partners:
             vals = {}
+            # print('\n is_active : ', partner.get('is_active'))
             if partner.get('is_active'):
                 if 'quickbooks_id' in partner and partner.get('quickbooks_id'):
                     partner_id = self.search([('quickbooks_id','=',partner.get('quickbooks_id'))],limit=1)

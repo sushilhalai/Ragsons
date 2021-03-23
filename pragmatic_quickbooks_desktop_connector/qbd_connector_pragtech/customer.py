@@ -49,7 +49,7 @@ def import_QBD_Customer_to_TPA():
         
 
         if to_execute_account == 1:
-            customer = "SELECT TOP {} ListId, ParentRefListID, Name, Salutation, JobTitle, Phone, AltPhone, Email, Notes, BillAddressCity, BillAddressPostalCode, BillAddressState, BillAddressCountry, BillAddressAddr1, BillAddressAddr2, TermsRefListId, TimeModified, ResaleNumber, AccountNumber, CustomerTypeRefFullName, TimeCreated, IsActive, SalesRepRefFullName FROM Customer Order by TimeModified ASC".format(limit)
+            customer = "SELECT TOP {} ListId, ParentRefListID, Name, Salutation, JobTitle, Phone, AltPhone, Email, Notes, BillAddressCity, BillAddressPostalCode, BillAddressState, BillAddressCountry, BillAddressAddr1, BillAddressAddr2, TermsRefListId, TimeModified, ResaleNumber, AccountNumber, CustomerTypeRefFullName, TimeCreated, IsActive, SalesRepRefFullName FROM Customer Where IsActive=1 Order by TimeModified ASC".format(limit)
             ## With Custom Fields
             # customer = "SELECT TOP {} ListId, ParentRefListID, Name, Salutation, JobTitle, Phone, AltPhone, Email, Notes, BillAddressCity, BillAddressPostalCode, BillAddressState, BillAddressCountry, BillAddressAddr1, BillAddressAddr2, TermsRefListId, TimeModified, ResaleNumber, AccountNumber, CustomerTypeRefFullName, TimeCreated, IsActive, SalesRepRefFullName, CustomFieldCustomerType, CustomFieldHowdidyouhearaboutus FROM Customer Order by TimeModified ASC".format(limit)
 
@@ -59,7 +59,7 @@ def import_QBD_Customer_to_TPA():
             time_modified = "{ts'"+str(request.args.get('last_qbd_id'))+"'}" 
 #             print(time_modified)
             # print (time_modified)
-            customer = "SELECT TOP {} ListId, ParentRefListID, Name, Salutation, JobTitle, Phone, AltPhone, Email, Notes, BillAddressCity, BillAddressPostalCode, BillAddressState, BillAddressCountry, BillAddressAddr1, BillAddressAddr2, TermsRefListId, TimeModified, ResaleNumber, AccountNumber, CustomerTypeRefFullName, TimeCreated, IsActive, SalesRepRefFullName FROM Customer where timemodified >={} Order by TimeModified ASC".format(limit,time_modified)
+            customer = "SELECT TOP {} ListId, ParentRefListID, Name, Salutation, JobTitle, Phone, AltPhone, Email, Notes, BillAddressCity, BillAddressPostalCode, BillAddressState, BillAddressCountry, BillAddressAddr1, BillAddressAddr2, TermsRefListId, TimeModified, ResaleNumber, AccountNumber, CustomerTypeRefFullName, TimeCreated, IsActive, SalesRepRefFullName FROM Customer where timemodified >={} and IsActive=1 Order by TimeModified ASC".format(limit,time_modified)
             ## With Custom Fields
             # customer = "SELECT TOP {} ListId, ParentRefListID, Name, Salutation, JobTitle, Phone, AltPhone, Email, Notes, BillAddressCity, BillAddressPostalCode, BillAddressState, BillAddressCountry, BillAddressAddr1, BillAddressAddr2, TermsRefListId, TimeModified, ResaleNumber, AccountNumber, CustomerTypeRefFullName, TimeCreated, IsActive, SalesRepRefFullName, CustomFieldCustomerType, CustomFieldHowdidyouhearaboutus FROM Customer where timemodified >={} Order by TimeModified ASC".format(limit,time_modified)
             # customer = "SELECT TOP 80 ListId, ParentRefListID, Name, Salutation, JobTitle, Phone, AltPhone, Email, Notes, BillAddressCity, BillAddressPostalCode, BillAddressState, BillAddressCountry, BillAddressAddr1, BillAddressAddr2, TermsRefListId, TimeModified, ResaleNumber, AccountNumber, CustomerTypeRefFullName FROM Customer where Name='Himesh34'"
@@ -70,7 +70,7 @@ def import_QBD_Customer_to_TPA():
             if request.args['fetch_record'] == 'one':
                 # print ("Oneeeeeeeeeeeee")
                 ListId = request.args['quickbooks_id']
-                customer = "SELECT ListId, ParentRefListID, Name, Salutation, JobTitle, Phone, AltPhone, Email, Notes, BillAddressCity, BillAddressPostalCode, BillAddressState, BillAddressCountry, BillAddressAddr1, BillAddressAddr2, TermsRefListId, TimeModified, ResaleNumber, AccountNumber, CustomerTypeRefFullName, TimeCreated, IsActive, SalesRepRefFullName FROM Customer Where ListID='"+ListId+"'"
+                customer = "SELECT ListId, ParentRefListID, Name, Salutation, JobTitle, Phone, AltPhone, Email, Notes, BillAddressCity, BillAddressPostalCode, BillAddressState, BillAddressCountry, BillAddressAddr1, BillAddressAddr2, TermsRefListId, TimeModified, ResaleNumber, AccountNumber, CustomerTypeRefFullName, TimeCreated, IsActive, SalesRepRefFullName FROM Customer Where IsActive=1 and ListID='"+ListId+"'"
                 ## With Custom Fields
                 # customer = "SELECT ListId, ParentRefListID, Name, Salutation, JobTitle, Phone, AltPhone, Email, Notes, BillAddressCity, BillAddressPostalCode, BillAddressState, BillAddressCountry, BillAddressAddr1, BillAddressAddr2, TermsRefListId, TimeModified, ResaleNumber, AccountNumber, CustomerTypeRefFullName, TimeCreated, IsActive, SalesRepRefFullName, CustomFieldCustomerType, CustomFieldHowdidyouhearaboutus FROM Customer Where ListID='"+ListId+"'"
                 cursor.execute(customer)

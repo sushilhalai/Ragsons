@@ -20,7 +20,7 @@ class ProductTemplate(models.Model):
                         ('ItemGroup', 'Item Group'),
                         ('ItemService', 'Item Service'),
                         ('ItemInventoryAssembly', 'Item Inventory Assembly')])
-    full_name = fields.Char('Quickbook Full Name', copy=False)
+    # full_name = fields.Char('Quickbook Full Name', copy=False)
 
     def export_product_to_qbd_server_action(self):
         product_lst = []
@@ -200,7 +200,7 @@ class ProductProduct(models.Model):
                 'description_purchase': product.get('description_purchase') if product.get('description_purchase') else '',
                 'type': product.get('type') if product.get('type') else '',
                 'qbd_product_type': product.get('qbd_product_type', False),
-                'full_name': product.get('full_name') if product.get('full_name') else '',
+                'description_sale': product.get('full_name') if product.get('full_name') else '',
             })
 
             if 'tax_code' in product and product.get('tax_code'):
