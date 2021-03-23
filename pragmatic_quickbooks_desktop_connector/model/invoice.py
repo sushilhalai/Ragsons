@@ -138,14 +138,14 @@ class AccountInvoice(models.Model):
             raise ValidationError('Please create journal of type sale ..')
         for invoice in invoices:
             vals = {}
-            # print('\ninvoice data : \n\n', invoice)
+            print('\ninvoice data : \n\n', invoice)
             if 'quickbooks_id' in invoice and invoice.get('quickbooks_id'):
                 invoice_id = self.search([('quickbooks_id', '=', invoice.get('quickbooks_id'))], limit=1)
 
                 if not invoice_id:
                     # create new SO
                     # print('\nCreate New Sale invoice')
-                    # print('invoice dict : ', invoice, '\n')
+                    print('invoice dict : ', invoice, '\n')
                     vals = self._prepare_invoice_dict(invoice)
 
                     if vals:
@@ -224,7 +224,7 @@ class AccountInvoice(models.Model):
 
         if invoice_lines:
             for line in invoice_lines:
-                # print('\n\nline IDs :', line)
+                _logger.info(_('\n\nline IDs : %s' %line))
                 vals_ol = {}
                 vals_col = {}
                 vals_tol = {}
@@ -245,7 +245,7 @@ class AccountInvoice(models.Model):
                         tax_code = self.env['qbd.tax.code'].search([('name', '=', line.get('tax_code'))])
                         if tax_code:
                             vals_ol.update({'qbd_tax_code': tax_code.id})
-                        # print("\n\n tax_code : ", tax_code)
+                        _logger.info(_("\n\n tax_code : %s"% tax_code))
                         if tax_code.is_taxable:
                             tax_id = self.env['account.tax'].search([('quickbooks_id', '=', line.get('tax_qbd_id'))], limit=1)
                             vals_ol.update({'tax_ids': [(6, 0, [tax_id.id])]})
@@ -334,10 +334,10 @@ class AccountInvoice(models.Model):
                     data.append(vals_col)
                     if vals_ol.get('tax_ids'):
                         data.append(vals_tol)
-                    # print('\n\ndata : ', data)
+                    _logger.info(_('\n\n data : %s '%data))
                     invoice_line_id = self.env['account.move.line'].create(data)
 
-                    # print ("----------------------------------------------------------\n\n\n",invoice_line_id,'\n\n\n')
+                    _logger.info(_("5----------------------------------------------------------\n\n%s\n"%invoice_line_id))
                     # invoice_line_id._compute_price()
                     if invoice_line_id:
                         invoice_line_id_list.append(invoice_line_id)

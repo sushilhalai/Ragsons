@@ -52,12 +52,12 @@ def import_QBD_Products_to_TPA():
             row_as_list = [x for x in row]
             # print (row_as_list)
             if row_as_list[1] == 'ItemInventoryAssembly':
-                if row_as_list[2]:
-                    odoo_product_dict['name'] = row_as_list[2]
-                else:
+                if row_as_list[3]:
                     odoo_product_dict['name'] = row_as_list[3]
+                else:
+                    odoo_product_dict['name'] = row_as_list[2]
 
-                odoo_product_dict['full_name'] = row_as_list[3]
+                odoo_product_dict['full_name'] = row_as_list[2]
                 odoo_product_dict['quickbooks_id'] = row_as_list[0]
                 odoo_product_dict['default_code'] = row_as_list[8]
                 odoo_product_dict['active'] = row_as_list[4]
@@ -77,12 +77,12 @@ def import_QBD_Products_to_TPA():
                 odoo_product_dict['qbd_product_type'] = 'ItemInventoryAssembly'
 
             if row_as_list[1] == 'ItemGroup':
-                if row_as_list[2]:
-                    odoo_product_dict['name'] = row_as_list[2]
-                else:
+                if row_as_list[3]:
                     odoo_product_dict['name'] = row_as_list[3]
+                else:
+                    odoo_product_dict['name'] = row_as_list[2]
 
-                odoo_product_dict['full_name'] = row_as_list[3]
+                odoo_product_dict['full_name'] = row_as_list[2]
                 odoo_product_dict['quickbooks_id'] = row_as_list[0]
                 odoo_product_dict['default_code'] = row_as_list[8]
                 odoo_product_dict['active'] = row_as_list[4]
@@ -102,12 +102,12 @@ def import_QBD_Products_to_TPA():
                 odoo_product_dict['qbd_product_type'] = 'ItemGroup'
                 
             if row_as_list[1] == 'ItemService':
-                if row_as_list[2]:
-                    odoo_product_dict['name'] = row_as_list[2]
-                else:
+                if row_as_list[3]:
                     odoo_product_dict['name'] = row_as_list[3]
+                else:
+                    odoo_product_dict['name'] = row_as_list[2]
 
-                odoo_product_dict['full_name'] = row_as_list[3]
+                odoo_product_dict['full_name'] = row_as_list[2]
                 odoo_product_dict['quickbooks_id'] = row_as_list[0]
                 odoo_product_dict['default_code'] = row_as_list[8]
                 odoo_product_dict['active'] = row_as_list[4]
@@ -128,12 +128,12 @@ def import_QBD_Products_to_TPA():
 
             if row_as_list[1] == 'ItemNonInventory':
 
-                if row_as_list[2]:
-                    odoo_product_dict['name'] = row_as_list[2]
-                else:
+                if row_as_list[3]:
                     odoo_product_dict['name'] = row_as_list[3]
+                else:
+                    odoo_product_dict['name'] = row_as_list[2]
 
-                odoo_product_dict['full_name'] = row_as_list[3]
+                odoo_product_dict['full_name'] = row_as_list[2]
                 odoo_product_dict['quickbooks_id'] = row_as_list[0]
                 odoo_product_dict['barcode'] = ''
                 odoo_product_dict['active'] = row_as_list[4]
@@ -154,12 +154,12 @@ def import_QBD_Products_to_TPA():
 
             if row_as_list[1] == 'ItemInventory':
 
-                if row_as_list[2]:
-                    odoo_product_dict['name'] = row_as_list[2]
-                else:
+                if row_as_list[3]:
                     odoo_product_dict['name'] = row_as_list[3]
+                else:
+                    odoo_product_dict['name'] = row_as_list[2]
 
-                odoo_product_dict['full_name'] = row_as_list[3]
+                odoo_product_dict['full_name'] = row_as_list[2]
                 odoo_product_dict['quickbooks_id'] = row_as_list[0]
                 odoo_product_dict['barcode'] = ''
                 odoo_product_dict['active'] = row_as_list[4]

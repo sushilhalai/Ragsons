@@ -789,18 +789,19 @@ class Qb_Config_Settings(models.Model):
             try:
                 response = requests.request('GET', self.url + '/import_invoice', params=params, headers=headers,
                                         verify=False)
-                # print("\n\n response.text1 : ", response.text)
+                print("\n\n response.text1 : ", response.text)
             except Exception as e:
                 raise Warning(e)
             formatted_data = ast.literal_eval(response.text)
 
         else:
             last_qbd_id = self.last_imported_qbd_id_for_invoice
+            print('\n\nlast qbd id ',self.last_imported_qbd_id_for_invoice)
             params = {'to_execute_account':2,'last_qbd_id':last_qbd_id,'fetch_record': 'all', 'limit': limit}
             try:
                 response = requests.request('GET', self.url + '/import_invoice', params=params, headers=headers,
                                         verify=False)
-                # print("\n\n response.text2 : ", response.text)
+                print("\n\n response.text2 : ", response.text)
             except Exception as e:
                 raise Warning(e)
 
