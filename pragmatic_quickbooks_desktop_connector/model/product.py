@@ -20,7 +20,7 @@ class ProductTemplate(models.Model):
                         ('ItemGroup', 'Item Group'),
                         ('ItemService', 'Item Service'),
                         ('ItemInventoryAssembly', 'Item Inventory Assembly')])
-    # full_name = fields.Char('Quickbook Full Name', copy=False)
+    full_name = fields.Char('Quickbook Full Name', copy=False)
 
     def export_product_to_qbd_server_action(self):
         product_lst = []
