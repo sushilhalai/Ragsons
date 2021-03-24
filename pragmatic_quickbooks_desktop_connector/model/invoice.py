@@ -246,9 +246,11 @@ class AccountInvoice(models.Model):
                         if tax_code:
                             vals_ol.update({'qbd_tax_code': tax_code.id})
                         _logger.info(_("\n\n tax_code : %s"% tax_code))
-                        if tax_code.is_taxable:
-                            tax_id = self.env['account.tax'].search([('quickbooks_id', '=', line.get('tax_qbd_id'))], limit=1)
+
+                        if tax_code.is_taxable and tax_code.quickbooks_id:
+                            tax_id = self.env['account.tax'].search([('quickbooks_id', '=', tax_code.quickbooks_id)], limit=1)
                             if tax_id:
+                                _logger.info('Got Tax : ', tax_id)
                                 vals_ol.update({'tax_ids': [(6, 0, [tax_id.id])]})
                                 vals_col.update({'tax_ids': False})
                                 vals_tol.update({'tax_ids': False})
