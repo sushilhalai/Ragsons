@@ -57,7 +57,7 @@ def import_QBD_Products_to_TPA():
                 else:
                     odoo_product_dict['name'] = row_as_list[2]
 
-                odoo_product_dict['full_name'] = row_as_list[2]
+                odoo_product_dict['full_name'] = row_as_list[6]
                 odoo_product_dict['quickbooks_id'] = row_as_list[0]
                 odoo_product_dict['default_code'] = row_as_list[8]
                 odoo_product_dict['active'] = row_as_list[4]
@@ -82,7 +82,7 @@ def import_QBD_Products_to_TPA():
                 else:
                     odoo_product_dict['name'] = row_as_list[2]
 
-                odoo_product_dict['full_name'] = row_as_list[2]
+                odoo_product_dict['full_name'] = row_as_list[6]
                 odoo_product_dict['quickbooks_id'] = row_as_list[0]
                 odoo_product_dict['default_code'] = row_as_list[8]
                 odoo_product_dict['active'] = row_as_list[4]
@@ -107,7 +107,7 @@ def import_QBD_Products_to_TPA():
                 else:
                     odoo_product_dict['name'] = row_as_list[2]
 
-                odoo_product_dict['full_name'] = row_as_list[2]
+                odoo_product_dict['full_name'] = row_as_list[6]
                 odoo_product_dict['quickbooks_id'] = row_as_list[0]
                 odoo_product_dict['default_code'] = row_as_list[8]
                 odoo_product_dict['active'] = row_as_list[4]
@@ -133,7 +133,7 @@ def import_QBD_Products_to_TPA():
                 else:
                     odoo_product_dict['name'] = row_as_list[2]
 
-                odoo_product_dict['full_name'] = row_as_list[2]
+                odoo_product_dict['full_name'] = row_as_list[5]
                 odoo_product_dict['quickbooks_id'] = row_as_list[0]
                 odoo_product_dict['barcode'] = ''
                 odoo_product_dict['active'] = row_as_list[4]
@@ -159,7 +159,7 @@ def import_QBD_Products_to_TPA():
                 else:
                     odoo_product_dict['name'] = row_as_list[2]
 
-                odoo_product_dict['full_name'] = row_as_list[2]
+                odoo_product_dict['full_name'] = row_as_list[6]
                 odoo_product_dict['quickbooks_id'] = row_as_list[0]
                 odoo_product_dict['barcode'] = ''
                 odoo_product_dict['active'] = row_as_list[4]
