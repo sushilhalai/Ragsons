@@ -514,7 +514,7 @@ class AccountPayment(models.Model):
                     })
             vals.update({
                 'quickbooks_id': payment.get('quickbooks_id') if payment.get('quickbooks_id') else '',
-                'date': payment.get('payment_date') if payment.get('payment_date') else '',
+                'date': payment.get('date') if payment.get('date') else False ,
                 'partner_type': payment.get('partner_type') if payment.get('partner_type') else 'customer',
                 # 'state': payment.get('state') if payment.get('state') else 'draft',
                 'payment_type': payment.get('payment_type') if payment.get('payment_type') else 'inbound',
@@ -530,7 +530,7 @@ class AccountPayment(models.Model):
                 qbd_payment_method_id = self.env['qbd.payment.method'].search([('name','=',payment.get('payment_method_name'))],limit=1)
 
                 if qbd_payment_method_id:
-                    journal_id = self.env['account.journal'].search([('qbd_payment_method_id','=',qbd_payment_method_id.id)])
+                    journal_id = self.env['account.journal'].search([('qbd_payment_method_id','=',qbd_payment_method_id.id)], limit=1)
 
                     if journal_id:
                         vals.update({'journal_id':journal_id.id})

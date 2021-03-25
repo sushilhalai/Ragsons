@@ -138,7 +138,7 @@ class AccountInvoice(models.Model):
             raise ValidationError('Please create journal of type sale ..')
         for invoice in invoices:
             vals = {}
-            print('\ninvoice data : \n\n', invoice)
+            # print('\ninvoice data : \n\n', invoice)
             if 'quickbooks_id' in invoice and invoice.get('quickbooks_id'):
                 invoice_id = self.search([('quickbooks_id', '=', invoice.get('quickbooks_id'))], limit=1)
 
@@ -250,10 +250,12 @@ class AccountInvoice(models.Model):
                         if tax_code.is_taxable and tax_code.quickbooks_id:
                             tax_id = self.env['account.tax'].search([('quickbooks_id', '=', tax_code.quickbooks_id)], limit=1)
                             if tax_id:
-                                _logger.info('Got Tax : ', tax_id)
+                                _logger.info(_('Got Tax : %s' %tax_id))
                                 vals_ol.update({'tax_ids': [(6, 0, [tax_id.id])]})
                                 vals_col.update({'tax_ids': False})
                                 vals_tol.update({'tax_ids': False})
+                            else:
+                                _logger.warning('Tax Error')
                     else:
                         vals_ol.update({'tax_ids': False})
                         vals_col.update({'tax_ids': False})
