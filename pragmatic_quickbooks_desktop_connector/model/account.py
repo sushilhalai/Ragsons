@@ -630,7 +630,7 @@ class AccountPayment(models.Model):
             'ref_number': payment.name if len(payment.name)<=11 else payment.id,
             'odoo_id': payment.id,
             'partner_name': payment.partner_id.quickbooks_id if payment.partner_id else False,
-            'date': payment.date.strftime('%Y-%m-%d') if payment.date else '',
+            'date': payment.date.strftime('%Y-%m-%d') if payment.date else False,
             'amount': payment.amount if payment.amount else '',
             'payment_method_name': payment.journal_id.qbd_payment_method_id.quickbooks_id if payment.journal_id else '',
             'ref': payment.ref if payment.ref else '',

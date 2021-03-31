@@ -9,6 +9,7 @@
         <field name="arch" type="xml">
             <xpath expr="//notebook/page[1]/group[1]/group/field[@name='categ_id']" position="after">
                 <field name="quickbooks_id" readonly="1"/>
+                <field name="qty_updated"/>
                 <field name="is_updated" readonly="0"/>
             </xpath>
 <!--            <xpath expr="//notebook/page[2]/group[2]" position="inside">-->

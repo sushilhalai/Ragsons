@@ -1,7 +1,10 @@
+from datetime import datetime as dt
+
 import requests
 import ast
 import logging
 import json
+import secrets
 
 from odoo import api, fields, models, _
 from odoo.exceptions import Warning
@@ -12,6 +15,7 @@ _logger = logging.getLogger(__name__)
 class ProductTemplate(models.Model):
     _inherit = "product.template"
 
+    qty_updated = fields.Boolean('QTY UPDATED', default=False)
     quickbooks_id = fields.Char("Quickbook id ", copy=False)
     is_updated = fields.Boolean("Is Updated")
     qbd_tax_code = fields.Many2one('qbd.tax.code')
@@ -107,8 +111,63 @@ class ProductTemplate(models.Model):
             #Check if product has QBD ID set
             rec._check_product_qbd_id()
             rec._post(qbd_id=rec.quickbooks_id)
-            
-            
+
+    def export_updated_inventory_to_qbd(self):
+        '''
+            This method is invoked via CRON to update the product
+            quantities to QBD
+        '''
+        product_ids = self.env['product.product'].sudo().search([('quickbooks_id', '!=', False),
+                                                                 ('qty_updated', '=', False),
+                                                                 ('type', '=', 'product')], limit=20)
+        print(product_ids)
+        product_data_lst = []
+        for product_id in product_ids:
+            product_data = self._prepare_product_inventory_data(product_id)
+            product_data_lst.append(product_data)
+
+        # AFTER FORMATTING MAKE A REQUESTS POST TO THE QBD
+        _logger.info("DATA IS {}".format(product_data_lst))
+        headers = {'content-type': 'application/json'}
+        if product_data_lst:
+            company = self.env.user.company_id
+            resp = requests.post(company.url + '/' + 'import_product_quantities', data=json.dumps(product_data_lst),
+                                 headers=headers, verify=False)
+            _logger.info("RESPONSE {} {}".format(resp.text, resp.status_code))
+            if resp.status_code == 200:
+                for rec in product_ids:
+                    rec.qty_updated = True
+                    _logger.info("QTY UPDATED !!!")
+
+    def _prepare_product_inventory_data(self, product_id):
+        '''
+            Acts as a helper method to prepare and return the products inventory data
+            @params : product_id(obj)
+            @returns : product_data_dict(dict)
+        '''
+        company = self.env.user.company_id
+        product_data_dict = {}
+        product_data_dict['AccountRefListID'] = company.qb_asset_account.quickbooks_id
+        product_data_dict['TxnDate'] = self._format_date(dt.now().date())
+        product_data_dict['RefNumber'] = '{}_{}'.format(product_id.id,
+                                                        self._get_ref_number())
+        product_data_dict['Memo'] = product_id.description or ''
+        product_data_dict['InventoryAdjustmentLineItemRefListID'] = product_id.quickbooks_id
+        product_data_dict['InventoryAdjustmentLineQuantityAdjustmentNewQuantity'] = product_id.qty_available
+
+        return product_data_dict
+
+    def _format_date(self, dt):
+        '''
+            Helper method to format and export date
+            @params: dt(obj)
+            @returns : formatted_date(str) (YYYY-MM-DD)
+        '''
+        return str(dt.year) + '-' + str(dt.month).zfill(2) + '-' + str(dt.day).zfill(2)
+
+    def _get_ref_number(self):
+        return secrets.token_urlsafe(4)
+
 
 class ProductProduct(models.Model):
     _inherit = "product.product"

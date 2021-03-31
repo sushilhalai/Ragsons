@@ -435,8 +435,8 @@ class AccountInvoice(models.Model):
 
         filters = [('id', 'not in', invoice_data_list), ('state', 'in', ['posted']), ('move_type', '=', 'out_invoice')]
 
-        if export_date:
-            filters.append(('invoice_date', '=', export_date))
+        # if export_date:
+        #     filters.append(('invoice_date', '=', export_date))
 
         if company.export_updated_record:
             filters.append(('quickbooks_id', '!=', False))

@@ -1,5 +1,5 @@
 from flask import Blueprint, request
-from connection import connect_to_qbd,close_connection_to_qbd
+from connection import connect_to_qbd, close_connection_to_qbd
 import logging
 import json
 logging.basicConfig(level=logging.DEBUG)
@@ -9,6 +9,61 @@ products = Blueprint('products', __name__, template_folder='templates')
 '''
 TPA - Third Party Application
 '''
+
+
+@products.route('/QBD/import_product_quantities', methods=['POST'])
+def import_QBD_product_quantities():
+    '''
+        Create Inventory adjustment lines against product for
+        updating product quantities
+    '''
+    try:
+
+        data = connect_to_qbd()
+        con = data[0]
+
+        cursor = con.cursor()
+        count = 0
+        product_ids = request.get_json(force=True)
+
+        for product_id in product_ids:
+            count += 1
+            if count == len(product_ids):
+                save_to_cache = 0
+            else:
+                save_to_cache = 1
+
+            # PREPARE QUERY
+            formatted_date = "{d '" + product_id.get('TxnDate') + "'}"
+            insert_query = "INSERT INTO InventoryAdjustmentLine (AccountRefListID, TxnDate, RefNumber, Memo, InventoryAdjustmentLineItemRefListID, InventoryAdjustmentLineQuantityAdjustmentNewQuantity, FQSaveToCache) VALUES ('{}', {}, '{}', '{}', '{}', {}, {})".format(
+                product_id.get('AccountRefListID'),
+                formatted_date,
+                product_id.get('RefNumber'),
+                product_id.get('Memo'),
+                product_id.get('InventoryAdjustmentLineItemRefListID'),
+                product_id.get('InventoryAdjustmentLineQuantityAdjustmentNewQuantity'),
+                0)
+            logging.info("INSERT QUERY IS {}".format(insert_query))
+            try:
+                cursor.execute(insert_query)
+                logging.info("QTY UPDATED !!!")
+            except Exception as ex:
+                print("EXCEPTION !!!!{}".format(str(ex)))
+                continue
+
+        # IF ALL GOES GOOD THEN RETURN SUCCESS RESPONSE
+        cursor.close()
+        return ({"status": 200, "message": "Inventory Adjustment created"})
+
+    except Exception as ex:
+        logging.error("ERROR IN import_qbd_product_quantities {}".format(str(ex)))
+        return ({"status": 201, "message": "Inventory Adjustment not created, {}".format(str(ex))})
+    finally:
+        if data != 0:
+            close_connection_to_qbd(data[0])
+
+
+
 @products.route('/QBD/import_products')
 def import_QBD_Products_to_TPA():
     try:

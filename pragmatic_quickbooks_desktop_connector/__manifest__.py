@@ -1,6 +1,6 @@
 {
     'name': 'Odoo QuickBooks Desktop (QBD) Connector',
-    'version': '14.0.0.13',
+    'version': '14.0.0.15',
     'author': 'Pragmatic TechSoft Pvt Ltd.',
     'website': 'www.pragtech.co.in',
     'category': 'Sales, Invoice',
@@ -42,6 +42,7 @@ odoo quickbooks integration
         'views/qbd_logger.xml',
         'views/serveractions.xml',
         'views/schedular.xml',
+        'views/inventory_cron.xml',
         'wizards/message_view.xml',
     ],
     'images': ['images/animated-quickbook-desktop.gif'],
