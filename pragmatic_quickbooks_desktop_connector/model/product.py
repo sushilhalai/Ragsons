@@ -161,8 +161,8 @@ class ProductTemplate(models.Model):
         headers = {'content-type': "application/json"}
         company = self.env['res.users'].search([('id', '=', self._uid)]).company_id
         _logger.info("COMPANY CATEGORY IS-------------> {} ".format(company))
-        if company.import_pro_limit:
-            limit = company.import_pro_limit
+        if company.inventory_adjust_limit:
+            limit = company.inventory_adjust_limit
         else:
             limit = 1
 
@@ -172,7 +172,7 @@ class ProductTemplate(models.Model):
             response = requests.request('GET', company.url + '/import_products', params=params, headers=headers,
                                         verify=False)
             formatted_data = ast.literal_eval(response.text)
-
+            print('\n\nFormatted Response Found : ', formatted_data)
             product = self.env['product.product']
             stock_change_qty = self.env['stock.change.product.qty']
             for val in formatted_data:

@@ -71,6 +71,7 @@ class Qb_Config_Settings(models.Model):
     export_payment_date = fields.Char('Export Payment Date', default=False)
     export_purchase_order_date = fields.Char('Export Purchase Date', default=False)
 
+    inventory_adjust_limit = fields.Integer('Product Inventory Adjustment Limit', default=0)
     # setting up the Account Receivable for Partners
     @api.onchange('qb_account_recievable')
     def onchange_qb_account_recievable(self):

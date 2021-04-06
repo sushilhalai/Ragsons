@@ -627,7 +627,8 @@ class AccountPayment(models.Model):
 
         # print ("Invoice QBD ID ---------------------------------------", inv_qb_id, invoice_id, payment.communication.split("/")[0])
         payment_dict.update({
-            'ref_number': payment.name if len(payment.name)<=11 else payment.id,
+            # 'ref_number': payment.name if len(payment.name)<=11 else payment.id,
+            'ref_number': payment.qbd_ref_no if payment.qbd_ref_no else False,
             'odoo_id': payment.id,
             'partner_name': payment.partner_id.quickbooks_id if payment.partner_id else False,
             'date': payment.date.strftime('%Y-%m-%d') if payment.date else False,
