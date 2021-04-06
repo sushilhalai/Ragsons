@@ -73,15 +73,24 @@ def import_QBD_Products_to_TPA():
 
         to_execute_account = int(request.args.get('to_execute_account'))
         limit = int(request.args.get('limit'))
-
-        if to_execute_account == 1:
-            products = "SELECT TOP {} ListId, Type, Description, Name, IsActive, SalesOrPurchaseDesc, SalesDesc, PurchaseDesc, ManufacturerPartNumber, PurchaseCost, SalesOrPurchasePrice, SalesPrice, QuantityOnHand, IncomeAccountRefListID, SalesTaxCodeRefFullName, SalesOrPurchaseAccountRefListID, IncomeAccountRefListID ,TimeModified FROM item where Type in ('ItemNonInventory','ItemInventory','ItemService','ItemGroup','ItemInventoryAssembly') Order by TimeModified ASC".format(limit)
-            cursor.execute(products)
-        elif to_execute_account == 2:
-            time_modified = "{ts'"+str(request.args.get('last_qbd_id'))+"'}" 
-            # print (time_modified)
-            products = "SELECT TOP {} ListId, Type, Description, Name, IsActive, SalesOrPurchaseDesc, SalesDesc, PurchaseDesc, ManufacturerPartNumber, PurchaseCost, SalesOrPurchasePrice, SalesPrice, QuantityOnHand, IncomeAccountRefListID, SalesTaxCodeRefFullName, SalesOrPurchaseAccountRefListID, IncomeAccountRefListID ,TimeModified FROM item where Type in ('ItemNonInventory','ItemInventory','ItemService','ItemGroup','ItemInventoryAssembly') and timemodified >={}".format(limit, time_modified)
-            cursor.execute(products)
+        if request.args.get('inventory_adjustment'):
+            if to_execute_account == 1:
+                products = "SELECT TOP {} ListId, Type, Description, Name, IsActive, SalesOrPurchaseDesc, SalesDesc, PurchaseDesc, ManufacturerPartNumber, PurchaseCost, SalesOrPurchasePrice, SalesPrice, QuantityOnHand, IncomeAccountRefListID, SalesTaxCodeRefFullName, SalesOrPurchaseAccountRefListID, IncomeAccountRefListID ,TimeModified FROM item where Type in ('ItemInventory','ItemInventoryAssembly') Order by TimeModified ASC".format(
+                    limit)
+                cursor.execute(products)
+            elif to_execute_account == 2:
+                products = "SELECT TOP {} ListId, Type, Description, Name, IsActive, SalesOrPurchaseDesc, SalesDesc, PurchaseDesc, ManufacturerPartNumber, PurchaseCost, SalesOrPurchasePrice, SalesPrice, QuantityOnHand, IncomeAccountRefListID, SalesTaxCodeRefFullName, SalesOrPurchaseAccountRefListID, IncomeAccountRefListID ,TimeModified FROM item where Type in ('ItemInventory','ItemInventoryAssembly')".format(
+                    limit)
+                cursor.execute(products)
+        else:
+            if to_execute_account == 1:
+                products = "SELECT TOP {} ListId, Type, Description, Name, IsActive, SalesOrPurchaseDesc, SalesDesc, PurchaseDesc, ManufacturerPartNumber, PurchaseCost, SalesOrPurchasePrice, SalesPrice, QuantityOnHand, IncomeAccountRefListID, SalesTaxCodeRefFullName, SalesOrPurchaseAccountRefListID, IncomeAccountRefListID ,TimeModified FROM item where Type in ('ItemNonInventory','ItemInventory','ItemService','ItemGroup','ItemInventoryAssembly') Order by TimeModified ASC".format(limit)
+                cursor.execute(products)
+            elif to_execute_account == 2:
+                time_modified = "{ts'"+str(request.args.get('last_qbd_id'))+"'}"
+                # print (time_modified)
+                products = "SELECT TOP {} ListId, Type, Description, Name, IsActive, SalesOrPurchaseDesc, SalesDesc, PurchaseDesc, ManufacturerPartNumber, PurchaseCost, SalesOrPurchasePrice, SalesPrice, QuantityOnHand, IncomeAccountRefListID, SalesTaxCodeRefFullName, SalesOrPurchaseAccountRefListID, IncomeAccountRefListID ,TimeModified FROM item where Type in ('ItemNonInventory','ItemInventory','ItemService','ItemGroup','ItemInventoryAssembly') and timemodified >={}".format(limit, time_modified)
+                cursor.execute(products)
 # 0ListId
 # 1Type
 # 2Description

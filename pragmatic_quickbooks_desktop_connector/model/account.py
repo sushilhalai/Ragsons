@@ -641,3 +641,21 @@ class AccountPayment(models.Model):
         # print ("Payment Dict -------------------------------", payment_dict)
         if payment_dict:
             return payment_dict
+
+
+class AccountPayRegInherit(models.TransientModel):
+    _inherit = "account.payment.register"
+
+    qbd_ref_no = fields.Char('QBD Reference Number ')
+
+    @api.model
+    def create(self,vals):
+        res = super(AccountPayRegInherit, self).create(vals)
+        return res
+
+    def _create_payment_vals_from_wizard(self):
+        res = super(AccountPayRegInherit, self)._create_payment_vals_from_wizard()
+        # print("res")
+        res.update({'qbd_ref_no': self.qbd_ref_no})
+
+        return res

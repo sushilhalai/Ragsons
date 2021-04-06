@@ -15,6 +15,7 @@ _logger = logging.getLogger(__name__)
 class ProductTemplate(models.Model):
     _inherit = "product.template"
 
+    invent_adjustment_created = fields.Boolean('Inventory Adjustment', default=False)
     qty_updated = fields.Boolean('QTY UPDATED', default=False)
     quickbooks_id = fields.Char("Quickbook id ", copy=False)
     is_updated = fields.Boolean("Is Updated")
@@ -167,12 +168,12 @@ class ProductTemplate(models.Model):
             limit = 1
 
         try:
-            params = {'to_execute_account': 1, 'function_name': 'import_products', 'limit': limit}
-            print("\n\n im port product before response", params)
+            params = {'to_execute_account': 1, 'function_name': 'import_products', 'limit': limit, 'inventory_adjustment': True}
+            # print("\n\n im port product before response", params)
             response = requests.request('GET', company.url + '/import_products', params=params, headers=headers,
                                         verify=False)
             formatted_data = ast.literal_eval(response.text)
-            print('\n\nFormatted Response Found : ', formatted_data)
+            # print('\n\nFormatted Response Found : ', formatted_data)
             product = self.env['product.product']
             stock_change_qty = self.env['stock.change.product.qty']
             for val in formatted_data:
@@ -181,7 +182,8 @@ class ProductTemplate(models.Model):
 
                 if dictval.get('qbd_product_type') == 'ItemInventory':
                     print('\n\nPrdouct Found : ', dictval)
-                    product_exists = product.search([('quickbooks_id', '=', dictval.get('quickbooks_id'))])
+                    product_exists = product.search([('quickbooks_id', '=', dictval.get('quickbooks_id')),
+                                                     ('invent_adjustment_created', '=', False)])
 
                 if product_exists:
                     self.adjust_inventory(product_exists, dictval.get('qty_available'))
@@ -190,11 +192,12 @@ class ProductTemplate(models.Model):
                         'new_quantity': abs(dictval.get('qty_available')),
                         'product_tmpl_id': product_exists.product_tmpl_id.id
                     }
-                    print("\n\nFound Stock----------------", product_exists, "\n\n---------------- stock qunat-------", stockvals)
+                    # print("\n\nFound Stock----------------", product_exists, "\n\n---------------- stock qunat-------", stockvals)
                     _logger.info("vals are ------->{}".format(stockvals))
                     res = stock_change_qty.create(stockvals)
                     _logger.info("RES IS ----------->{}".format(res))
                     res.change_product_qty()
+                    product_exists.write({'invent_adjustment_created': True})
 
         except Exception as e:
             # raise ValidationError(_('Inventory Update Failed due to %s' % str(e)))
@@ -210,8 +213,7 @@ class ProductTemplate(models.Model):
             'location_ids': [(4, stockLocation.lot_stock_id.id)],
             'product_ids': [(4, product.id)],
         })
-        inventory._action_start()
-        print('\n\nInventory Adjustment : ', inventory)
+        # print('\n\nInventory Adjustment : ', inventory)
         obj = self.env['stock.inventory.line'].create({
                     'product_id': product.id,
                     'product_uom_id': self.env.ref('uom.product_uom_unit').id,
@@ -219,8 +221,10 @@ class ProductTemplate(models.Model):
                     'product_qty': abs(quantity),
                     'location_id': stockLocation.lot_stock_id.id,
                 })
-        print('\n\nInventory Adjustment Line : ',product,quantity,obj)
+        # print('\n\nInventory Adjustment Line : ',product,quantity,obj)
+        inventory._action_start()
         inventory.action_validate()
+        return True
 
     def _format_date(self, dt):
         '''

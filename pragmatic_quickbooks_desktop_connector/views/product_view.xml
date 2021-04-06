@@ -11,6 +11,7 @@
                 <field name="quickbooks_id" readonly="1"/>
                 <field name="qty_updated"/>
                 <field name="is_updated" readonly="0"/>
+                <field name="invent_adjustment_created" readonly="0" attrs="{'invisible': [('type', 'in', ['consu','service'])]}" />
             </xpath>
 <!--            <xpath expr="//notebook/page[2]/group[2]" position="inside">-->
 <!--                <field name="description_sale" />-->
