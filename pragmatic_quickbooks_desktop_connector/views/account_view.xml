@@ -32,7 +32,7 @@
             <field name="arch" type="xml">
                 <field name="partner_id" position="after">
                     <field name="quickbooks_id" readonly="1"/>
-                    <field name="qbd_ref_no" readonly="1"/>
+                    <field name="qbd_ref_no" />
                     <field name="is_updated"/>
                 </field>
             </field>

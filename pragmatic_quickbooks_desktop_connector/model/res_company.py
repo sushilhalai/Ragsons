@@ -584,7 +584,7 @@ class Qb_Config_Settings(models.Model):
         response = None
         if not self.last_imported_qbd_id_for_product:
             params = {'to_execute_account': 1, 'function_name': 'import_products', 'limit': limit}
-#             print("\n\n im port product before response")
+            # print("\n\n im port product before response" ,params)
             try:
                 response = requests.request('GET', self.url + '/import_products', params=params, headers=headers,
                                         verify=False)
@@ -611,7 +611,7 @@ class Qb_Config_Settings(models.Model):
 
         return self.sendMessage({'Message': "Data imported Successful !!"})
 
-
+    #
     # @api.multi
     def import_payment_methods(self):
         is_imported = False

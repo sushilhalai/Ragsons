@@ -322,6 +322,7 @@ from datetime import datetime
 import logging
 
 logging.basicConfig(level=logging.DEBUG)
+import re
 
 invoice = Blueprint('invoice', __name__, template_folder='templates')
 
@@ -471,7 +472,27 @@ def export_TPA_invoice_to_QBD():
                     quickbooks_id = rec.get('invoice_order_qbd_id')
                     is_update = 1
 
-                ref_number = "RKL0{}".format(rec.get('odoo_invoice_number'))
+                # ref_number = "RKL0{}".format(rec.get('odoo_invoice_number'))
+
+                refNumberQuery = "Select Top 1 RefNumber From invoice where TxnDateMacro='ThisMonth' order by TimeCreated Desc"
+                cursor.execute(refNumberQuery)
+                refNum = cursor.fetchone()
+
+                if not refNum:
+                    refNumberQuery = "Select Top 1 RefNumber From invoice where TxnDateMacro='ThisCalendarQuarter' order by TimeCreated Desc"
+                    cursor.execute(refNumberQuery)
+                    refNum = cursor.fetchone()
+
+                if not refNum:
+                    refNumberQuery = "Select Top 1 RefNumber From invoice where TxnDateMacro='ThisFiscalQuarter' order by TimeCreated Desc"
+                    cursor.execute(refNumberQuery)
+                    refNum = cursor.fetchone()
+
+                temp = re.compile("([a-zA-Z]+)([0-9]+)")
+                res = temp.match(refNum[0]).groups()
+                num = int(res[1]) + 1
+                ref_number = '{}{}'.format(res[0], num)
+
                 partner_name = rec.get('partner_name')
                 default_tax_on_invoice = rec.get('default_tax_on_invoice')
 

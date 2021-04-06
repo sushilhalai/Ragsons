@@ -7,7 +7,7 @@ import json
 import secrets
 
 from odoo import api, fields, models, _
-from odoo.exceptions import Warning
+from odoo.exceptions import Warning, ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -156,6 +156,71 @@ class ProductTemplate(models.Model):
         product_data_dict['InventoryAdjustmentLineQuantityAdjustmentNewQuantity'] = product_id.qty_available
 
         return product_data_dict
+
+    def import_updated_inventory_qbd_to_odoo(self):
+        headers = {'content-type': "application/json"}
+        company = self.env['res.users'].search([('id', '=', self._uid)]).company_id
+        _logger.info("COMPANY CATEGORY IS-------------> {} ".format(company))
+        if company.import_pro_limit:
+            limit = company.import_pro_limit
+        else:
+            limit = 1
+
+        try:
+            params = {'to_execute_account': 1, 'function_name': 'import_products', 'limit': limit}
+            print("\n\n im port product before response", params)
+            response = requests.request('GET', company.url + '/import_products', params=params, headers=headers,
+                                        verify=False)
+            formatted_data = ast.literal_eval(response.text)
+
+            product = self.env['product.product']
+            stock_change_qty = self.env['stock.change.product.qty']
+            for val in formatted_data:
+                product_exists = None
+                dictval = product._prepare_product_dict(val)
+
+                if dictval.get('qbd_product_type') == 'ItemInventory':
+                    print('\n\nPrdouct Found : ', dictval)
+                    product_exists = product.search([('quickbooks_id', '=', dictval.get('quickbooks_id'))])
+
+                if product_exists:
+                    self.adjust_inventory(product_exists, dictval.get('qty_available'))
+                    stockvals = {
+                        'product_id': product_exists.id,
+                        'new_quantity': abs(dictval.get('qty_available')),
+                        'product_tmpl_id': product_exists.product_tmpl_id.id
+                    }
+                    print("\n\nFound Stock----------------", product_exists, "\n\n---------------- stock qunat-------", stockvals)
+                    _logger.info("vals are ------->{}".format(stockvals))
+                    res = stock_change_qty.create(stockvals)
+                    _logger.info("RES IS ----------->{}".format(res))
+                    res.change_product_qty()
+
+        except Exception as e:
+            # raise ValidationError(_('Inventory Update Failed due to %s' % str(e)))
+            _logger.warning(_('Inventory Update Failed due to %s' % str(e)))
+
+    def adjust_inventory(self, product, quantity):
+        """ Adjust inventory of the given products
+        """
+        stockLocation = self.env.ref('stock.warehouse0')
+
+        inventory = self.env['stock.inventory'].create({
+            'name': 'QBD Inventory adjustment',
+            'location_ids': [(4, stockLocation.lot_stock_id.id)],
+            'product_ids': [(4, product.id)],
+        })
+        inventory._action_start()
+        print('\n\nInventory Adjustment : ', inventory)
+        obj = self.env['stock.inventory.line'].create({
+                    'product_id': product.id,
+                    'product_uom_id': self.env.ref('uom.product_uom_unit').id,
+                    'inventory_id': inventory.id,
+                    'product_qty': abs(quantity),
+                    'location_id': stockLocation.lot_stock_id.id,
+                })
+        print('\n\nInventory Adjustment Line : ',product,quantity,obj)
+        inventory.action_validate()
 
     def _format_date(self, dt):
         '''

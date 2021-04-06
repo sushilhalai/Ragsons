@@ -103,6 +103,7 @@ def import_QBD_Products_to_TPA():
         odoo_product_list = []        
 
         for row in cursor.fetchall():
+
             odoo_product_dict = {}
             row_as_list = [x for x in row]
             # print (row_as_list)
