@@ -1,6 +1,6 @@
 {
     'name': 'Odoo QuickBooks Desktop (QBD) Connector',
-    'version': '14.0.0.20',
+    'version': '14.0.0.21',
     'author': 'Pragmatic TechSoft Pvt Ltd.',
     'website': 'www.pragtech.co.in',
     'category': 'Sales, Invoice',
