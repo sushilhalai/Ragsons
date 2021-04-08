@@ -214,7 +214,7 @@
                                 <field name="export_pay_limit" class="inline"/>
                                 <field name="export_po_limit" class="inline"/>
 
-                                <separator name="import_limit" string="Import"/>
+                                <separator name="import_limit" string="Inventory Adjustment"/>
                                 <field name="inventory_adjust_limit"/>
 
                             </group>

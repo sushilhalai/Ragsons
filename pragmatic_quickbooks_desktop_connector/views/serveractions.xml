@@ -11,9 +11,9 @@
                     records.product_bom_import_qbd()
             </field>
         </record>
-        
-     <!-- Export product to QBD -->
-     <record model="ir.actions.server" id="product_export_to_qbd">
+
+        <!-- Export product to QBD -->
+        <record model="ir.actions.server" id="product_export_to_qbd">
             <field name="name">Export Product to QBD</field>
             <field name="model_id" ref="product.model_product_template" />
             <field name="binding_model_id" ref="product.model_product_template"/>  
@@ -23,4 +23,29 @@
                     records.export_product_to_qbd_server_action()
             </field>
         </record>
+
+         <!-- Export product to QBD -->
+         <record model="ir.actions.server" id="product_uncheck_update_flags">
+            <field name="name">Uncheck Quantity Update Flags</field>
+            <field name="model_id" ref="product.model_product_template" />
+            <field name="binding_model_id" ref="product.model_product_template"/>
+            <field name="state">code</field>
+            <field name="code">
+                if records:
+                    records.uncheck_update_flags_server_action()
+            </field>
+        </record>
+
+         <!-- Export product to QBD -->
+         <record model="ir.actions.server" id="product_uncheck_invent_flags">
+            <field name="name">Uncheck Inventory Adjustment Update Flags</field>
+            <field name="model_id" ref="product.model_product_template" />
+            <field name="binding_model_id" ref="product.model_product_template"/>
+            <field name="state">code</field>
+            <field name="code">
+                if records:
+                    records.uncheck_inventory_flags_server_action()
+            </field>
+        </record>
+
 </odoo>

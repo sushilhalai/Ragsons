@@ -37,6 +37,26 @@ class ProductTemplate(models.Model):
             else:
                 _logger.error("NON Conditions matched for product export to the qbd")
 
+    def uncheck_update_flags_server_action(self):
+        # print('Self Context : ', self._context, self)
+        try:
+            for rec in self:
+                if rec.qty_updated:
+                    rec.write({'qty_updated': False})
+            return True
+        except Exception as e:
+            _logger.error(_('Error : %s' %e))
+
+    def uncheck_inventory_flags_server_action(self):
+        try:
+            for rec in self:
+                if rec.invent_adjustment_created:
+                    rec.write({'invent_adjustment_created': False})
+        except Exception as e:
+            _logger.error(_('Error : %s' %e))
+
+        return True
+
     @api.model
     def create(self, vals):
         # print ("-------------------------",vals)
@@ -181,7 +201,7 @@ class ProductTemplate(models.Model):
                 dictval = product._prepare_product_dict(val)
 
                 if dictval.get('qbd_product_type') == 'ItemInventory':
-                    print('\n\nPrdouct Found : ', dictval)
+                    # print('\n\nPrdouct Found : ', dictval)
                     product_exists = product.search([('quickbooks_id', '=', dictval.get('quickbooks_id')),
                                                      ('invent_adjustment_created', '=', False)])
 
@@ -195,9 +215,9 @@ class ProductTemplate(models.Model):
                     # print("\n\nFound Stock----------------", product_exists, "\n\n---------------- stock qunat-------", stockvals)
                     _logger.info("vals are ------->{}".format(stockvals))
                     res = stock_change_qty.create(stockvals)
+                    product_exists.write({'invent_adjustment_created': True})
                     _logger.info("RES IS ----------->{}".format(res))
                     res.change_product_qty()
-                    product_exists.write({'invent_adjustment_created': True})
 
         except Exception as e:
             # raise ValidationError(_('Inventory Update Failed due to %s' % str(e)))
@@ -209,7 +229,7 @@ class ProductTemplate(models.Model):
         stockLocation = self.env.ref('stock.warehouse0')
 
         inventory = self.env['stock.inventory'].create({
-            'name': 'QBD Inventory adjustment',
+            'name': 'QBD Inventory Adjustment',
             'location_ids': [(4, stockLocation.lot_stock_id.id)],
             'product_ids': [(4, product.id)],
         })
