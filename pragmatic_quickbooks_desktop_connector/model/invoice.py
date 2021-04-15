@@ -64,6 +64,9 @@ class AccountInvoice(models.Model):
     quickbooks_id = fields.Char("Quickbook id ", copy=False)
     qbd_number = fields.Char("QBD INV No.", copy=False)
     is_updated = fields.Boolean('Is Updated')
+    lpo_no = fields.Char('LPO #', copy=False)
+    veh_or_w_bill = fields.Char('VEH/W.BILL#', copy=False)
+    etr_no = fields.Char('ETR #', copy=False)
 
     # @api.onchange('partner_id')
     # def _onchange_partner_id(self):
@@ -196,6 +199,9 @@ class AccountInvoice(models.Model):
                 'quickbooks_id': invoice.get('quickbooks_id') if invoice.get('quickbooks_id') else '',
                 'invoice_date_due': invoice.get('date_due') if invoice.get('date_due') else '',
                 'qbd_number' : invoice.get('number') if invoice.get('number') else '',
+                'lpo_no':invoice.get('po_number') if invoice.get('po_number') else '',
+                'etr_no': invoice.get('etr_number') if invoice.get('etr_number') else '',
+                'veh_or_w_bill': invoice.get('veh_bill') if invoice.get('veh_bill') else '',
                 'move_type' : 'out_invoice',
             })
 
@@ -553,6 +559,9 @@ class AccountInvoice(models.Model):
             'qbd_memo': invoice.name if invoice.name else '',
             'partner_name': invoice.partner_id.quickbooks_id,
             'invoice_date': invoice.invoice_date.strftime('%Y-%m-%d'),
+            'lpo_no' : invoice.lpo_no,
+            'veh_or_w_bill': invoice.veh_or_w_bill,
+            'etr_no': invoice.etr_no,
         })
 
         if invoice.invoice_line_ids:

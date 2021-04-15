@@ -14,7 +14,11 @@
                 <field name="ref" position="after">
                     <field name="qbd_number" readonly="1"/>
                 </field>
-
+                <xpath expr="//field[@name='invoice_date']" position="after">
+                    <field name="lpo_no" readonly="1"/>
+                    <field name="veh_or_w_bill" readonly="1"/>
+                    <field name="etr_no" readonly="1"/>
+                </xpath>
                 <xpath expr="//tree/field[@name='tax_ids']" position="attributes">
                     <attribute name="attrs">{'required':[('display_type', '=', False)]}</attribute>
                 </xpath>

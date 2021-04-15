@@ -343,14 +343,14 @@ def import_QBD_Invoice_to_TPA():
 
         if to_execute_account == 1:
 
-            invoice_order = "SELECT TOP {} CustomerRefListID, TermsRefFullName, ARAccountRefListID, TxnDate, TimeCreated, DueDate, IsPaid, RefNumber, TxnId, Timemodified FROM Invoice order by timemodified asc".format(
+            invoice_order = "SELECT TOP {} CustomerRefListID, TermsRefFullName, ARAccountRefListID, TxnDate, TimeCreated, DueDate, IsPaid, RefNumber, TxnId,PONumber,FOB,CustomFiledOther Timemodified FROM Invoice order by timemodified asc".format(
                 limit)
             cursor.execute(invoice_order)
 
         elif to_execute_account == 2:
             time_modified = "{ts'" + str(request.args.get('last_qbd_id')) + "'}"
             # print (time_modified)
-            invoice_order = "SELECT TOP {} CustomerRefListID, TermsRefFullName, ARAccountRefListID, TxnDate, TimeCreated, DueDate, IsPaid, RefNumber, TxnId, Timemodified FROM Invoice where timemodified >={}".format(
+            invoice_order = "SELECT TOP {} CustomerRefListID, TermsRefFullName, ARAccountRefListID, TxnDate, TimeCreated, DueDate, IsPaid, RefNumber, TxnId,PONumber,FOB,CustomFiledOther Timemodified FROM Invoice where timemodified >={}".format(
                 limit, time_modified)
             cursor.execute(invoice_order)
 
@@ -371,6 +371,9 @@ def import_QBD_Invoice_to_TPA():
             odoo_invoice_dict['partner_name'] = row_as_list[0]
             # Search partner_id in odoo from res.partner where partner_name is quicbooks_id in res.partner
             odoo_invoice_dict['number'] = row_as_list[7]
+            odoo_invoice_dict['po_number'] = row_as_list[10]
+            odoo_invoice_dict['etr_number'] = row_as_list[11]
+            odoo_invoice_dict['veh_bill'] = row_as_list[12]
 
             if row_as_list[5]:
                 odoo_invoice_dict['date_due'] = str(row_as_list[3])
@@ -555,27 +558,27 @@ def export_TPA_invoice_to_QBD():
                         if not is_present:
                             if tax_id:
                                 if payment_terms:
-                                    insertQuery = "Insert into InvoiceLine (InvoiceLineItemRefListID, InvoiceLineQuantity, InvoiceLineRate, InvoiceLineAmount, InvoiceLineDesc, CustomerRefListID, TxnDate, FQSaveToCache,  InvoiceLineTaxCodeRefFullName, Memo, RefNumber, TermsRefFullName) VALUES ('{}' ,{} ,{} ,{} ,'{}' ,'{}' ,{} ,{},'{}','{}', '{}', '{}')".format(
+                                    insertQuery = "Insert into InvoiceLine (InvoiceLineItemRefListID, InvoiceLineQuantity, InvoiceLineRate, InvoiceLineAmount, InvoiceLineDesc, CustomerRefListID, TxnDate, FQSaveToCache,  InvoiceLineTaxCodeRefFullName, Memo, RefNumber, TermsRefFullName, PONumber, FOB, CustomFieldOther ) VALUES ('{}' ,{} ,{} ,{} ,'{}' ,'{}' ,{} ,{},'{}','{}', '{}', '{}', '{}', '{}', '{}')".format(
                                         product_quickbooks_id, invoice_line_quantity, invoice_line_rate,
                                         invoice_line_amount, invoice_line_desc, customer_quickbooks_id,
                                         invoice_line_txn_date, save_to_cache, qbd_tax_code, qbd_memo, ref_number,
-                                        payment_terms)
+                                        payment_terms, lines.get('lpo_no'), lines.get('etr_no'), lines.get('veh_or_w_bill'))
                                 else:
-                                    insertQuery = "Insert into InvoiceLine (InvoiceLineItemRefListID, InvoiceLineQuantity, InvoiceLineRate, InvoiceLineAmount, InvoiceLineDesc, CustomerRefListID, TxnDate, FQSaveToCache,  InvoiceLineTaxCodeRefFullName, Memo, RefNumber) VALUES ('{}' ,{} ,{} ,{} ,'{}' ,'{}' ,{} ,{},'{}','{}', '{}')".format(
+                                    insertQuery = "Insert into InvoiceLine (InvoiceLineItemRefListID, InvoiceLineQuantity, InvoiceLineRate, InvoiceLineAmount, InvoiceLineDesc, CustomerRefListID, TxnDate, FQSaveToCache,  InvoiceLineTaxCodeRefFullName, Memo, RefNumber, PONumber, FOB, CustomFieldOther ) VALUES ('{}' ,{} ,{} ,{} ,'{}' ,'{}' ,{} ,{},'{}','{}', '{}', '{}', '{}', '{}')".format(
                                         product_quickbooks_id, invoice_line_quantity, invoice_line_rate,
                                         invoice_line_amount, invoice_line_desc, customer_quickbooks_id,
-                                        invoice_line_txn_date, save_to_cache, qbd_tax_code, qbd_memo, ref_number)
+                                        invoice_line_txn_date, save_to_cache, qbd_tax_code, qbd_memo, ref_number, lines.get('lpo_no'), lines.get('etr_no'), lines.get('veh_or_w_bill'))
                             else:
                                 if payment_terms:
-                                    insertQuery = "Insert into InvoiceLine (InvoiceLineItemRefListID, InvoiceLineQuantity, InvoiceLineRate, InvoiceLineAmount, InvoiceLineDesc, CustomerRefListID, TxnDate, FQSaveToCache, Memo, RefNumber, TermsRefFullName) VALUES ('{}' ,{} ,{} ,{} ,'{}' ,'{}' ,{} ,{}, '{}', '{}', '{}')".format(
+                                    insertQuery = "Insert into InvoiceLine (InvoiceLineItemRefListID, InvoiceLineQuantity, InvoiceLineRate, InvoiceLineAmount, InvoiceLineDesc, CustomerRefListID, TxnDate, FQSaveToCache, Memo, RefNumber, TermsRefFullName, PONumber, FOB, CustomFieldOther ) VALUES ('{}' ,{} ,{} ,{} ,'{}' ,'{}' ,{} ,{}, '{}', '{}', '{}', '{}', '{}', '{}')".format(
                                         product_quickbooks_id, invoice_line_quantity, invoice_line_rate,
                                         invoice_line_amount, invoice_line_desc, customer_quickbooks_id,
-                                        invoice_line_txn_date, save_to_cache, qbd_memo, ref_number, payment_terms)
+                                        invoice_line_txn_date, save_to_cache, qbd_memo, ref_number, payment_terms, lines.get('lpo_no'), lines.get('etr_no'), lines.get('veh_or_w_bill'))
                                 else:
-                                    insertQuery = "Insert into InvoiceLine (InvoiceLineItemRefListID, InvoiceLineQuantity, InvoiceLineRate, InvoiceLineAmount, InvoiceLineDesc, CustomerRefListID, TxnDate, FQSaveToCache, Memo, RefNumber) VALUES ('{}' ,{} ,{} ,{} ,'{}' ,'{}' ,{} ,{}, '{}', '{}')".format(
+                                    insertQuery = "Insert into InvoiceLine (InvoiceLineItemRefListID, InvoiceLineQuantity, InvoiceLineRate, InvoiceLineAmount, InvoiceLineDesc, CustomerRefListID, TxnDate, FQSaveToCache, Memo, RefNumber, PONumber, FOB, CustomFieldOther ) VALUES ('{}' ,{} ,{} ,{} ,'{}' ,'{}' ,{} ,{}, '{}', '{}', '{}', '{}', '{}')".format(
                                         product_quickbooks_id, invoice_line_quantity, invoice_line_rate,
                                         invoice_line_amount, invoice_line_desc, customer_quickbooks_id,
-                                        invoice_line_txn_date, save_to_cache, qbd_memo, ref_number)
+                                        invoice_line_txn_date, save_to_cache, qbd_memo, ref_number, lines.get('lpo_no'), lines.get('etr_no'), lines.get('veh_or_w_bill'))
 
                             try:
                                 logging.info("Insert Query ----------------------------- ")
