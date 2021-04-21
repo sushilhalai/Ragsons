@@ -591,7 +591,7 @@ class AccountInvoice(models.Model):
                 line_dict.update({
                     'payment_terms': invoice.partner_id.property_payment_term_id.name if invoice.partner_id.property_payment_term_id.quickbooks_id else '',
                     'ref_number': invoice.id,
-                    'unit': invoice.x_studio_packaging if invoice.x_studio_packaging else '',
+                    'unit': line.x_studio_packaging if line.x_studio_packaging else '',
                     'product_name': line.product_id.quickbooks_id if line.product_id else '',
                     'name': description,
                     'quantity': line.quantity if line.quantity else '',
