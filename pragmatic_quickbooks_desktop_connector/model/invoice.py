@@ -240,6 +240,9 @@ class AccountInvoice(models.Model):
                     vals_col.update({'move_id': invoice_id.id})
                     vals_tol.update({'move_id': invoice_id.id})
 
+                if 'unit' in line:
+                    vals_ol.update({'x_studio_packaging':line.get('unit')})
+
                 if 'product_name' in line and line.get('product_name'):
                     product_id = self.env['product.product'].search([('quickbooks_id', '=', line.get('product_name'))])
 
@@ -588,6 +591,7 @@ class AccountInvoice(models.Model):
                 line_dict.update({
                     'payment_terms': invoice.partner_id.property_payment_term_id.name if invoice.partner_id.property_payment_term_id.quickbooks_id else '',
                     'ref_number': invoice.id,
+                    'unit': invoice.x_studio_packaging if invoice.x_studio_packaging else '',
                     'product_name': line.product_id.quickbooks_id if line.product_id else '',
                     'name': description,
                     'quantity': line.quantity if line.quantity else '',
@@ -596,6 +600,8 @@ class AccountInvoice(models.Model):
                     'qbd_tax_code': line.qbd_tax_code.name if line.qbd_tax_code.name else '',
                     'price_subtotal': line.price_subtotal if line.price_subtotal else '',
                 })
+
+
 
             if line_dict:
                 invoice_lines.append(line_dict)
