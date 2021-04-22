@@ -148,7 +148,7 @@ class AccountInvoice(models.Model):
                 if not invoice_id:
                     # create new SO
                     # print('\nCreate New Sale invoice')
-                    print('invoice dict : ', invoice, '\n')
+                    # print('invoice dict : ', invoice, '\n')
                     vals = self._prepare_invoice_dict(invoice)
 
                     if vals:
@@ -241,7 +241,8 @@ class AccountInvoice(models.Model):
                     vals_tol.update({'move_id': invoice_id.id})
 
                 if 'unit' in line:
-                    vals_ol.update({'x_studio_packaging':line.get('unit')})
+                    if line.get('unit'):
+                        vals_ol.update({'x_studio_packaging':line.get('unit')})
 
                 if 'product_name' in line and line.get('product_name'):
                     product_id = self.env['product.product'].search([('quickbooks_id', '=', line.get('product_name'))])

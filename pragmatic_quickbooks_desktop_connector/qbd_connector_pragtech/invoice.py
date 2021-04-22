@@ -343,14 +343,14 @@ def import_QBD_Invoice_to_TPA():
 
         if to_execute_account == 1:
 
-            invoice_order = "SELECT TOP {} CustomerRefListID, TermsRefFullName, ARAccountRefListID, TxnDate, TimeCreated, DueDate, IsPaid, RefNumber, TxnId,PONumber,FOB,CustomFieldOther Timemodified FROM Invoice order by timemodified asc".format(
+            invoice_order = "SELECT TOP {} CustomerRefListID, TermsRefFullName, ARAccountRefListID, TxnDate, TimeCreated, DueDate, IsPaid, RefNumber, TxnId,PONumber,FOB,CustomFieldOther, Timemodified FROM Invoice order by timemodified asc".format(
                 limit)
             cursor.execute(invoice_order)
 
         elif to_execute_account == 2:
             time_modified = "{ts'" + str(request.args.get('last_qbd_id')) + "'}"
-            # print (time_modified)
-            invoice_order = "SELECT TOP {} CustomerRefListID, TermsRefFullName, ARAccountRefListID, TxnDate, TimeCreated, DueDate, IsPaid, RefNumber, TxnId,PONumber,FOB,CustomFieldOther Timemodified FROM Invoice where timemodified >={}".format(
+            print(time_modified)
+            invoice_order = "SELECT TOP {} CustomerRefListID, TermsRefFullName, ARAccountRefListID, TxnDate, TimeCreated, DueDate, IsPaid, RefNumber, TxnId,PONumber,FOB,CustomFieldOther, Timemodified FROM Invoice where Timemodified >= {}".format(
                 limit, time_modified)
             cursor.execute(invoice_order)
 
@@ -364,6 +364,7 @@ def import_QBD_Invoice_to_TPA():
         odoo_invoice_list = []
 
         for row in cursor.fetchall():
+
             odoo_invoice_dict = {}
             row_as_list = [x for x in row]
 
@@ -371,10 +372,11 @@ def import_QBD_Invoice_to_TPA():
             odoo_invoice_dict['partner_name'] = row_as_list[0]
             # Search partner_id in odoo from res.partner where partner_name is quicbooks_id in res.partner
             odoo_invoice_dict['number'] = row_as_list[7]
-            odoo_invoice_dict['po_number'] = row_as_list[10]
-            odoo_invoice_dict['etr_number'] = row_as_list[11]
-            odoo_invoice_dict['veh_bill'] = row_as_list[12]
 
+            odoo_invoice_dict['po_number'] = row_as_list[9]
+            odoo_invoice_dict['etr_number'] = row_as_list[10]
+            odoo_invoice_dict['veh_bill'] = row_as_list[11]
+            print(odoo_invoice_dict, row_as_list)
             if row_as_list[5]:
                 odoo_invoice_dict['date_due'] = str(row_as_list[3])
 
@@ -427,17 +429,17 @@ def import_QBD_Invoice_to_TPA():
                 # print ("----")
                 # print (odoo_invoice_line_list)
             odoo_invoice_dict['invoice_lines'] = odoo_invoice_line_list
-            odoo_invoice_dict['last_time_modified'] = str(row_as_list[9])
+            odoo_invoice_dict['last_time_modified'] = str(row_as_list[12])
             # Last_QBD_id = str(row_as_list[9])
             odoo_invoice_list.append(odoo_invoice_dict)
 
-        # print (odoo_invoice_list)
+            print(odoo_invoice_list)
 
         cursor.close()
         return (str(odoo_invoice_list))
 
     except Exception as e:
-        # print (e)
+        print(e)
         data = 0
         return ({"Status": 404,
                  "Message": "Please wait for sometime and check whether Quickbooks Desktop and Command Prompt are running as adminstrator."})
@@ -477,9 +479,14 @@ def export_TPA_invoice_to_QBD():
 
                 # ref_number = "RKL0{}".format(rec.get('odoo_invoice_number'))
 
-                refNumberQuery = "Select Top 1 RefNumber From invoice where TxnDateMacro='ThisMonth' order by TimeCreated Desc"
+                refNumberQuery = "Select Top 1 RefNumber From invoice where TxnDateMacro='ThisWeek' order by TimeCreated Desc"
                 cursor.execute(refNumberQuery)
                 refNum = cursor.fetchone()
+
+                if not refNum:
+                    refNumberQuery = "Select Top 1 RefNumber From invoice where TxnDateMacro='ThisMonth' order by TimeCreated Desc"
+                    cursor.execute(refNumberQuery)
+                    refNum = cursor.fetchone()
 
                 if not refNum:
                     refNumberQuery = "Select Top 1 RefNumber From invoice where TxnDateMacro='ThisCalendarQuarter' order by TimeCreated Desc"
@@ -515,6 +522,20 @@ def export_TPA_invoice_to_QBD():
                 #    cursor.execute(check_record)
                 #    is_present = cursor.fetchone()
                 queryResponse = None
+                if rec.get('lpo_no'):
+                    lpo_no = rec.get('lpo_no')
+                else:
+                    lpo_no = ''
+
+                if rec.get('etr_no'):
+                    etr_no = rec.get('etr_no')
+                else:
+                    etr_no = ''
+
+                if rec.get('veh_or_w_bill'):
+                    veh_or_w_bill = rec.get('veh_or_w_bill')
+                else:
+                    veh_or_w_bill = ''
                 for lines in rec.get('invoice_lines'):
                     print("lines : ", lines)
                     count += 1
@@ -559,21 +580,6 @@ def export_TPA_invoice_to_QBD():
                     else:
                         payment_terms = ''
 
-                    if lines.get('lpo_no'):
-                        lpo_no = lines.get('lpo_no')
-                    else:
-                        lpo_no = ''
-
-                    if lines.get('etr_no'):
-                        etr_no = lines.get('etr_no')
-                    else:
-                        etr_no = ''
-
-                    if lines.get('veh_or_w_bill'):
-                        veh_or_w_bill = lines.get('veh_or_w_bill')
-                    else:
-                        veh_or_w_bill = ''
-
                     if lines.get('unit'):
                         x_studio_packaging = lines.get('unit')
                     else:
@@ -589,26 +595,26 @@ def export_TPA_invoice_to_QBD():
                                         product_quickbooks_id, invoice_line_quantity, invoice_line_rate,
                                         invoice_line_amount, invoice_line_desc, customer_quickbooks_id,
                                         invoice_line_txn_date, save_to_cache, qbd_tax_code, qbd_memo, ref_number,
-                                        payment_terms, lpo_no, etr_no, veh_or_w_bill,x_studio_packaging)
+                                        payment_terms, lpo_no, etr_no, veh_or_w_bill, x_studio_packaging)
                                 else:
                                     insertQuery = "Insert into InvoiceLine (InvoiceLineItemRefListID, InvoiceLineQuantity, InvoiceLineRate, InvoiceLineAmount, InvoiceLineDesc, CustomerRefListID, TxnDate, FQSaveToCache,  InvoiceLineTaxCodeRefFullName, Memo, RefNumber, PONumber, FOB, CustomFieldOther,  CustomFieldInvoiceLineOther1 ) VALUES ('{}' ,{} ,{} ,{} ,'{}' ,'{}' ,{} ,{},'{}','{}', '{}', '{}', '{}', '{}', '{}')".format(
                                         product_quickbooks_id, invoice_line_quantity, invoice_line_rate,
                                         invoice_line_amount, invoice_line_desc, customer_quickbooks_id,
                                         invoice_line_txn_date, save_to_cache, qbd_tax_code, qbd_memo, ref_number,
-                                        lpo_no, etr_no, veh_or_w_bill,x_studio_packaging)
+                                        lpo_no, etr_no, veh_or_w_bill, x_studio_packaging)
                             else:
                                 if payment_terms:
                                     insertQuery = "Insert into InvoiceLine (InvoiceLineItemRefListID, InvoiceLineQuantity, InvoiceLineRate, InvoiceLineAmount, InvoiceLineDesc, CustomerRefListID, TxnDate, FQSaveToCache, Memo, RefNumber, TermsRefFullName, PONumber, FOB, CustomFieldOther, CustomFieldInvoiceLineOther1 ) VALUES ('{}' ,{} ,{} ,{} ,'{}' ,'{}' ,{} ,{}, '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(
                                         product_quickbooks_id, invoice_line_quantity, invoice_line_rate,
                                         invoice_line_amount, invoice_line_desc, customer_quickbooks_id,
                                         invoice_line_txn_date, save_to_cache, qbd_memo, ref_number, payment_terms,
-                                        lpo_no, etr_no, veh_or_w_bill,x_studio_packaging)
+                                        lpo_no, etr_no, veh_or_w_bill, x_studio_packaging)
                                 else:
                                     insertQuery = "Insert into InvoiceLine (InvoiceLineItemRefListID, InvoiceLineQuantity, InvoiceLineRate, InvoiceLineAmount, InvoiceLineDesc, CustomerRefListID, TxnDate, FQSaveToCache, Memo, RefNumber, PONumber, FOB, CustomFieldOther, CustomFieldInvoiceLineOther1 ) VALUES ('{}' ,{} ,{} ,{} ,'{}' ,'{}' ,{} ,{}, '{}', '{}', '{}', '{}', '{}', '{}')".format(
                                         product_quickbooks_id, invoice_line_quantity, invoice_line_rate,
                                         invoice_line_amount, invoice_line_desc, customer_quickbooks_id,
                                         invoice_line_txn_date, save_to_cache, qbd_memo, ref_number, lpo_no, etr_no,
-                                        veh_or_w_bill,x_studio_packaging)
+                                        veh_or_w_bill, x_studio_packaging)
 
                             try:
                                 logging.info("Insert Query ----------------------------- ")
@@ -667,23 +673,26 @@ def export_TPA_invoice_to_QBD():
                                     product_quickbooks_id, invoice_line_quantity, invoice_line_rate,
                                     invoice_line_amount, invoice_line_desc, customer_quickbooks_id,
                                     invoice_line_txn_date, save_to_cache, qbd_tax_code, qbd_memo, ref_number,
-                                    payment_terms, lpo_no, etr_no, veh_or_w_bill,x_studio_packaging)
+                                    payment_terms, lpo_no, etr_no, veh_or_w_bill, x_studio_packaging)
                             else:
                                 updateQuery = "Insert into InvoiceLine (InvoiceLineItemRefListID, InvoiceLineQuantity, InvoiceLineRate, InvoiceLineAmount, InvoiceLineDesc, CustomerRefListID, TxnDate, FQSaveToCache, InvoiceLineTaxCodeRefFullName, Memo, RefNumber, PONumber, FOB, CustomFieldOther, CustomFieldInvoiceLineOther1) VALUES ('{}' ,{} ,{} ,{} ,'{}' ,'{}' ,{} ,{},'{}','{}', '{}','{}', '{}', '{}', '{}')".format(
                                     product_quickbooks_id, invoice_line_quantity, invoice_line_rate,
                                     invoice_line_amount, invoice_line_desc, customer_quickbooks_id,
-                                    invoice_line_txn_date, save_to_cache, qbd_tax_code, qbd_memo, ref_number, lpo_no, etr_no, veh_or_w_bill, x_studio_packaging)
+                                    invoice_line_txn_date, save_to_cache, qbd_tax_code, qbd_memo, ref_number, lpo_no,
+                                    etr_no, veh_or_w_bill, x_studio_packaging)
                         else:
                             if payment_terms:
                                 updateQuery = "Insert into InvoiceLine (InvoiceLineItemRefListID, InvoiceLineQuantity, InvoiceLineRate, InvoiceLineAmount, InvoiceLineDesc, CustomerRefListID, TxnDate, FQSaveToCache, Memo, RefNumber, TermsRefFullName, PONumber, FOB, CustomFieldOther, CustomFieldInvoiceLineOther1) VALUES ('{}' ,{} ,{} ,{} ,'{}' ,'{}' ,{} ,{}, '{}', '{}', '{}','{}', '{}', '{}', '{}')".format(
                                     product_quickbooks_id, invoice_line_quantity, invoice_line_rate,
                                     invoice_line_amount, invoice_line_desc, customer_quickbooks_id,
-                                    invoice_line_txn_date, save_to_cache, qbd_memo, ref_number, payment_terms, lpo_no, etr_no, veh_or_w_bill, x_studio_packaging)
+                                    invoice_line_txn_date, save_to_cache, qbd_memo, ref_number, payment_terms, lpo_no,
+                                    etr_no, veh_or_w_bill, x_studio_packaging)
                             else:
                                 updateQuery = "Insert into InvoiceLine (InvoiceLineItemRefListID, InvoiceLineQuantity, InvoiceLineRate, InvoiceLineAmount, InvoiceLineDesc, CustomerRefListID, TxnDate, FQSaveToCache, Memo, RefNumber, PONumber, FOB, CustomFieldOther, CustomFieldInvoiceLineOther1) VALUES ('{}' ,{} ,{} ,{} ,'{}' ,'{}' ,{} ,{}, '{}', '{}','{}', '{}', '{}', '{}')".format(
                                     product_quickbooks_id, invoice_line_quantity, invoice_line_rate,
                                     invoice_line_amount, invoice_line_desc, customer_quickbooks_id,
-                                    invoice_line_txn_date, save_to_cache, qbd_memo, ref_number, lpo_no, etr_no, veh_or_w_bill, x_studio_packaging)
+                                    invoice_line_txn_date, save_to_cache, qbd_memo, ref_number, lpo_no, etr_no,
+                                    veh_or_w_bill, x_studio_packaging)
 
                         try:
                             print(updateQuery)
